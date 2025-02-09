@@ -11,8 +11,79 @@
 
 #define INI_FILENAME "Sample.ini"
 
+void PrintHeader (const char *header)
+{
+    printf ("-------------------------------------------------------------------------------\n"
+            "%s\n", header);
+}
+
 int main()
 {
+    // Test some of the calls:
+    char buffer[80] = {0};
+
+    const char *testLines[] =
+    {
+        // Emtpy
+        "",
+        // Invalid
+        "Hello World!",
+        // Comments
+        "; This is a comment",
+        ";This is also a comment",
+        // Sections
+        "[This is a section]",
+        "[ This is a section ]",
+        "[This is a section] ; Comment",
+        "[  This is a section  ] ; Comment",
+        // Key/Value
+        "Tag=Value",
+        "Tag = Value",
+        "Tag = Value ; Comment",
+        NULL
+    };
+
+    // Test Comment parser.
+    PrintHeader ("Comments:");
+    int idx = 0;
+    while (NULL != testLines[idx])
+    {
+        printf ("%2d) ", idx);
+        GetCommentFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
+        idx++;
+    }
+
+    // Test Section parser
+    PrintHeader ("Sections:");
+    idx = 0;
+    while (NULL != testLines[idx])
+    {
+        printf ("%2d) ", idx);
+        GetSectionFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
+        idx++;
+    }
+
+    // Test Tag parser
+    PrintHeader ("Tags");
+    idx = 0;
+    while (NULL != testLines[idx])
+    {
+        printf ("%2d) ", idx);
+        GetTagFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
+        idx++;
+    }
+
+    // Test Key parser
+    PrintHeader ("Value");
+    idx = 0;
+    while (NULL != testLines[idx])
+    {
+        printf ("%2d) ", idx);
+        GetValueFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
+        idx++;
+    }
+
+    exit (0);
 #if 0
     // Test the INIRecords.
     bool status = false;

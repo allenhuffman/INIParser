@@ -4,6 +4,9 @@
 
 #include "Utilities.h"
 
+// This will MODIFY the string passes in by adding a NIL '\0' at the end if
+// it has to remove '\r' '\n', and adjust the starting pointer forward if
+// there are spaces to trim from the start.
 char *trim(char *str)
 {
     char *newStr = str;

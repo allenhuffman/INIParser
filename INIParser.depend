@@ -4,7 +4,8 @@
 	"INIParser.h"
 	"ErrnoToCVIStatus.h"
 
-1739125594 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.h
+1739135028 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.h
+	<stdbool.h>
 	<stddef.h>
 	"INIParserGettingValuesFromTags.h"
 	"INIParserInformational.h"
@@ -36,17 +37,18 @@
 	<stddef.h>
 	"INIParser.h"
 
-1739125267 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.c
+1739137221 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.c
 	<stdio.h>
+	<string.h>
 	"INIParser.h"
 	"INIParser.h"
 	"INIRecords.h"
 
-1739127644 c:\users\alspl\onedrive\documents\codeblocks\iniparser\inirecords.h
+1739128447 c:\users\alspl\onedrive\documents\codeblocks\iniparser\inirecords.h
 	<stdbool.h>
 	<stdint.h>
 
-1739125336 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparsergettingvaluesfromtags.c
+1739129402 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparsergettingvaluesfromtags.c
 	<stdio.h>
 	"INIParser.h"
 	"INIParserGettingValuesFromTags.h"
@@ -59,14 +61,16 @@
 	"INIParserInformational.h"
 	"INIRecords.h"
 
-1739125522 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparsermanagement.c
+1739132641 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparsermanagement.c
 	<stdio.h>
+	<string.h>
 	"INIParser.h"
 	"INIParserManagement.h"
 	"ErrnoToCVIStatus.h"
 	"INIRecords.h"
+	"Utilities.h"
 
-1739125346 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparserputtingtagvaluepairs.c
+1739129422 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparserputtingtagvaluepairs.c
 	<stdio.h>
 	"INIParser.h"
 	"INIParserPuttingTagValuePairs.h"
@@ -79,20 +83,28 @@
 	"INIParserRemovingSectionsAndItems.h"
 	"INIRecords.h"
 
-1739127561 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\main.c
+1739137107 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\main.c
 	<ctype.h>
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+	"ErrnoToCVIStatus.h"
 	"INIParser.h"
 	"Utilities.h"
 	"INIRecords.h"
 
 1739077071 c:\users\alspl\onedrive\documents\codeblocks\iniparser\utilities.h
 
-1739077116 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\utilities.c
+1739132804 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\utilities.c
 	<ctype.h>
 	<stddef.h>
 	<string.h>
 	"Utilities.h"
+
+1739129152 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\inirecords.c
+	<stdbool.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"INIRecords.h"
 

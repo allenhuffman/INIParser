@@ -123,15 +123,25 @@ int Ini_ReadFromFile (IniText handle, const char pathname[])
                 if (NULL == fgets (&line[0], sizeof(line)-1, fp))
                 {
                     // Error or end of file.
-                    // TODO: check for error code to return here.
+                    status = ErrnoToCVIStatus (errno);
                     break;
                 }
 
+                // Trim off any leading or trailing spaces,
+                // and any \r \n special characters.
                 char *trimmedLine = trim (line);
+
+                // Add this line to a record.
                 RecordWrite (handle, trimmedLine);
             }
 
             fclose (fp);
+
+            // If no error, continue...
+            if (NO_ERROR == status)
+            {
+                // Build Section/Key/Value stuff.
+            }
         }
         else // File could not beopened.
         {
