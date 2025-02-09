@@ -2,6 +2,7 @@
 // Includes
 /*--------------------------------------------------------------------------*/
 // Compiler headers
+#include <ctype.h>  // for iswhite()
 #include <stdio.h>
 #include <string.h> // for strchr()
 
@@ -175,14 +176,30 @@ bool GetTagFromLine (const char line[], char *tagPtr, size_t tagSize)
 
             if (NULL != equalPtr) // '=' found.
             {
-                size_t tagLen = equalPtr - &newLine[0];
+                int startPos = 0;
+                int endPos = (equalPtr - &newLine[0] - 1);
+
+                // Scan forward to first non whitespace character.
+                while (startPos < endPos && iswspace (newLine[startPos]))
+                {
+                    startPos++;
+                }
+
+                // Scan backwards to first non whitespace character.
+                while (endPos > startPos && iswspace (newLine[endPos]))
+                {
+                    endPos--;
+                }
+
+                // Length from first character to '='.
+                size_t tagLen = endPos - startPos + 1;
 
                 if (tagLen > tagSize)
                 {
                     tagLen = tagSize;
                 }
 
-                strncpy (tagPtr, &newLine[0], tagLen);
+                strncpy (tagPtr, &newLine[startPos], tagLen);
                 // strncpy() does not add the '\0' if it copies to max.
                 tagPtr[tagLen] = '\0';
 
@@ -222,15 +239,30 @@ bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize)
 
                 if (lineLen > (size_t)(equalPtr - &newLine[0]))
                 {
+                    int startPos = ((equalPtr - &newLine[0]) + 1);
+                    int endPos = lineLen - 1;
+
+                    // Scan forward to first non whitespace character.
+                    while (startPos < endPos && iswspace (newLine[startPos]))
+                    {
+                        startPos++;
+                    }
+
+                    // Scan backwards to first non whitespace character.
+                    while (endPos > startPos && iswspace (newLine[endPos]))
+                    {
+                        endPos--;
+                    }
+
                     // Length from after = to end of string.
-                    size_t valueLen = strlen (equalPtr + 1);
+                    size_t valueLen = endPos - startPos + 1;
 
                     if (valueLen > valueSize)
                     {
                         valueLen = valueSize;
                     }
 
-                    strncpy (valuePtr, equalPtr+1, valueLen);
+                    strncpy (valuePtr, &newLine[startPos], valueLen);
                     // strncpy() does not add the '\0' if it copies to max.
                     valuePtr[valueLen] = '\0';
 
