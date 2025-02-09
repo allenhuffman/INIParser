@@ -4,66 +4,80 @@
 #include <string.h>
 
 #include "INIParser.h"
+#include "Utilities.h"
 
-char *trim(char *str)
-{
-    char *newStr = str;
-
-    if (str != NULL)
-    {
-        size_t len = strlen(str);
-
-        // Trim trailing whitespace and control characters
-        for (size_t idx = len; idx > 0; idx--)
-        {
-            char ch = str[idx - 1];
-
-            if (iscntrl(ch) || isspace(ch))
-            {
-                str[idx - 1] = '\0';
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        // Trim leading whitespace and control characters
-        while (*newStr && (iscntrl(*newStr) || isspace(*newStr)))
-        {
-            newStr++;
-        }
-    }
-
-    return newStr;
-}
+#define INI_FILENAME "Sample.ini"
 
 int main()
 {
-    FILE *fp;
-    char buffer[100];
+    IniText iniText;
 
-    fp = fopen ("Sample.ini", "r");
+    iniText = Ini_New (0); // No automatic sorting.
 
-    if (fp == NULL)
+    if (0 != iniText)
     {
-       perror ("OPEN ERROR");
-    }
-    else
-    {
-        int line = 0;
+        int             status = 0;
+        unsigned int    httpPort = 0;
+        char            httpUsername[80];
 
-        while (!feof (fp))
+        unsigned int    httpsPort = 0;
+        char            httpsUsername[80];
+
+        unsigned int    ftpPort = 0;
+        char            ftpUsername[80];
+
+        status = Ini_ReadFromFile (iniText, INI_FILENAME);
+
+        /*------------------------------------------------------------------*/
+        // [http]
+        /*------------------------------------------------------------------*/
+        if (0 == status)
         {
-            if (fgets (&buffer[0], sizeof(buffer)-1, fp) != NULL)
-            {
-                char *str = trim (buffer);
-
-                printf ("%d. '%s'\n", line++, str);
-            }
+            status = Ini_GetUInt (iniText, "http", "port", &httpPort);
         }
 
-        fclose (fp);
+        if (0 == status)
+        {
+            status = Ini_GetStringIntoBuffer (iniText, "http", "username",
+                                              &httpUsername[0],
+                                              sizeof(httpUsername)-1);
+        }
+
+        /*------------------------------------------------------------------*/
+        // [https]
+        /*------------------------------------------------------------------*/
+        if (0 == status)
+        {
+            status = Ini_GetUInt (iniText, "https", "port", &httpsPort);
+        }
+
+        if (0 == status)
+        {
+            status = Ini_GetStringIntoBuffer (iniText, "https", "username",
+                                              &httpsUsername[0],
+                                              sizeof(httpsUsername)-1);
+        }
+
+        /*------------------------------------------------------------------*/
+        // [ftp]
+        /*------------------------------------------------------------------*/
+        if (0 == status)
+        {
+            status = Ini_GetUInt (iniText, "ftp", "port", &ftpPort);
+        }
+
+        if (0 == status)
+        {
+            status = Ini_GetStringIntoBuffer (iniText, "ftp", "username",
+                                              &ftpUsername[0],
+                                              sizeof(ftpUsername)-1);
+        }
+
+        printf ("HTTP  %-5u - %s\n", httpPort, httpUsername);
+        printf ("HTTPS %-5u - %s\n", httpPort, httpUsername);
+        printf ("FTP   %-5u - %s\n", httpPort, httpUsername);
+
+        Ini_Dispose (iniText);
     }
 
     return EXIT_SUCCESS;
