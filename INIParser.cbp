@@ -32,10 +32,18 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename=".gitattributes" />
+		<Unit filename=".gitignore" />
 		<Unit filename="INIParser.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="INIParser.h" />
+		<Unit filename="README.md" />
+		<Unit filename="Sample.ini" />
+		<Unit filename="Utilities.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Utilities.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

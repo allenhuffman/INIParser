@@ -57,15 +57,21 @@ typedef enum
 /*--------------------------------------------------------------------------*/
 // Management
 IniText Ini_New (int automaticSorting);
+
+
 void    Ini_Dispose (IniText handle);
+
 //int     Ini_SetEncoding (IniText handle, IniFileEncodingType iniFileEncoding);
 //int     Ini_GetEncoding (IniText handle, IniFileEncodingType *iniFileEnding);
 //void    Ini_Sort (IniText handle);
 //void    Ini_DisableSorting (IniText handle);
 //int     Ini_SortInternally (IniText handle);
 //void    Ini_DisableInternalSorting (IniText handle);
+
 int     Ini_WriteToFile (IniText handle, const char pathname[]);
+
 int     Ini_ReadFromFile (IniText handle, const char pathname[]);
+
 //int     Ini_WriteToRegistry (IniText handle, int rootKey, const char subkeyName[]);
 //int     Ini_ReadFromRegistry (IniText handle,  int rootKey, const char subkeyName[]);
 //int     Ini_WriteGeneric (IniText handle, Ini_OutputFunc outputFunction, void *outputDestination);
@@ -79,28 +85,74 @@ int     Ini_ReadFromFile (IniText handle, const char pathname[]);
 //int     Ini_SetMaxValueLineLength (IniText handle, int maxValueLineLength);
 
 // Putting Tag/Value Pairs
-int     Ini_PutString (IniText handle, const char sectionName[], const char tagName[], const char stringValue[]);
-int     Ini_PutRawString (IniText handle, const char sectionName[], const char tagName[], const char stringValue[]);
-int     Ini_PutInt (IniText handle, const char sectionName[], const char tagName[], int integerValue);
-int     Ini_PutUInt (IniText handle, const char sectionName[], const char tagName[], unsigned int unsignedIntegerValue);
-int     Ini_PutDouble (IniText handle, const char sectionName[], const char tagName[], double doubleValue);
-int     Ini_PutBoolean (IniText handle, const char sectionName[], const char tagName[], int booleanValue);
-int     Ini_PutData (IniText handle, const char sectionName[], const char tagName[], const unsigned char data[], long dataSize);
+int     Ini_PutString (IniText handle, const char sectionName[],
+                       const char tagName[], const char stringValue[]);
+
+int     Ini_PutRawString (IniText handle, const char sectionName[],
+                          const char tagName[], const char stringValue[]);
+
+int     Ini_PutInt (IniText handle, const char sectionName[],
+                    const char tagName[], int integerValue);
+
+int     Ini_PutUInt (IniText handle, const char sectionName[],
+                     const char tagName[], unsigned int unsignedIntegerValue);
+
+int     Ini_PutDouble (IniText handle, const char sectionName[],
+                       const char tagName[], double doubleValue);
+
+int     Ini_PutBoolean (IniText handle, const char sectionName[],
+                        const char tagName[], int booleanValue);
+
+int     Ini_PutData (IniText handle, const char sectionName[],
+                     const char tagName[], const unsigned char data[],
+                     long dataSize);
 
 // Getting Values from Tags
-int     Ini_GetPointerToString (IniText handle, const char sectionName[], const char tagName[], char **pointerToString);
-int     Ini_GetStringCopy (IniText handle, const char sectionName[], const char tagName[], char **copyOfString);
-int     Ini_GetStringIntoBuffer (IniText handle, const char sectionName[], const char tagName[], char buffer[], size_t bufferSize);
-int     Ini_GetPointerToRawString (IniText handle, const char sectionName[], const char tagName[], char **pointerToString);
-int     Ini_GetRawStringCopy (IniText handle, const char sectionName[], const char tagName[], char **copyOfString);
-int     Ini_GetRawStringIntoBuffer (IniText handle, const char sectionName[], const char tagName[], char buffer[], size_t bufferSize);
-int     Ini_GetInt (IniText handle, const char sectionName[], const char tagName[], int *integerValue);
-int     Ini_GetUInt (IniText handle, const char sectionName[], const char tagName[], unsigned int *unsignedIntegerValue);
-int     Ini_GetDouble (IniText handle, const char sectionName[], const char tagName[], double *doubleValue);
-int     Ini_GetBoolean (IniText handle, const char sectionName[], const char tagName[], int *booleanValue);
-int     Ini_GetData (IniText handle, const char sectionName[], const char tagName[], unsigned char **data, size_t *dataSize);
-int     Ini_GetInt64 (IniText handle, const char sectionName[], const char tagName[], long long *integerValue);
-int     Ini_GetUInt64 (IniText handle, const char sectionName[], const char tagName[], unsigned long long *unsignedIntegerValue);
+int     Ini_GetPointerToString (IniText handle, const char sectionName[],
+                                const char tagName[],
+                                char **pointerToString);
+
+int     Ini_GetStringCopy (IniText handle, const char sectionName[],
+                           const char tagName[], char **copyOfString);
+
+int     Ini_GetStringIntoBuffer (IniText handle, const char sectionName[],
+                                 const char tagName[], char buffer[],
+                                 size_t bufferSize);
+
+int     Ini_GetPointerToRawString (IniText handle, const char sectionName[],
+                                   const char tagName[],
+                                   char **pointerToString);
+
+int     Ini_GetRawStringCopy (IniText handle, const char sectionName[],
+                              const char tagName[], char **copyOfString);
+
+int     Ini_GetRawStringIntoBuffer (IniText handle, const char sectionName[],
+                                    const char tagName[], char buffer[],
+                                    size_t bufferSize);
+
+int     Ini_GetInt (IniText handle, const char sectionName[],
+                    const char tagName[], int *integerValue);
+
+int     Ini_GetUInt (IniText handle, const char sectionName[],
+                     const char tagName[],
+                     unsigned int *unsignedIntegerValue);
+
+int     Ini_GetDouble (IniText handle, const char sectionName[],
+                       const char tagName[], double *doubleValue);
+
+int     Ini_GetBoolean (IniText handle, const char sectionName[],
+                        const char tagName[], int *booleanValue);
+
+int     Ini_GetData (IniText handle, const char sectionName[],
+                     const char tagName[], unsigned char **data,
+                     size_t *dataSize);
+
+int     Ini_GetInt64 (IniText handle, const char sectionName[],
+                      const char tagName[], long long *integerValue);
+
+int     Ini_GetUInt64 (IniText handle, const char sectionName[],
+                       const char tagName[],
+                       unsigned long long *unsignedIntegerValue);
 
 // Informational
 //int     Ini_SectionExists (IniText handle, const char sectionName[]);
