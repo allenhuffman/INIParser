@@ -3,6 +3,7 @@
 /*--------------------------------------------------------------------------*/
 // Compiler headers
 #include <stdio.h>
+#include <string.h> // for memset()
 
 // This project's header
 #include "INIParser.h"
@@ -13,6 +14,7 @@
 // Other headers
 #include "ErrnoToCVIStatus.h"
 #include "INIRecords.h"
+#include "Utilities.h"
 
 /*--------------------------------------------------------------------------*/
 // Constants
@@ -52,7 +54,7 @@ IniText Ini_New (int automaticSorting)
 /*--------------------------------------------------------------------------*/
 void Ini_Dispose (IniText handle)
 {
-    RecordTerm (handle);
+    RecordTerm (handle); // This function will do a NULL check.
 }
 
 /*--------------------------------------------------------------------------*/
@@ -111,6 +113,23 @@ int Ini_ReadFromFile (IniText handle, const char pathname[])
 
         if (NULL != fp)
         {
+            char line[LINE_MAX_LEN];
+
+            // Read file into records.
+            while (!feof (fp))
+            {
+                memset (&line[0], 0x0, sizeof (line));
+
+                if (NULL == fgets (&line[0], sizeof(line)-1, fp))
+                {
+                    // Error or end of file.
+                    // TODO: check for error code to return here.
+                    break;
+                }
+
+                char *trimmedLine = trim (line);
+                RecordWrite (handle, trimmedLine);
+            }
 
             fclose (fp);
         }

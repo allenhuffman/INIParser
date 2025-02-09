@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ErrnoToCVIStatus.h"
 #include "INIParser.h"
 #include "Utilities.h"
 
@@ -12,6 +13,7 @@
 
 int main()
 {
+#if 0
     // Test the INIRecords.
     bool status = false;
 
@@ -43,7 +45,9 @@ int main()
         printf ("Done.\n");
 
     } // end of if (NULL != handle)
-#if 0
+
+#endif
+
     // TEST CODE
     IniText iniText;
 
@@ -53,20 +57,24 @@ int main()
     {
         int             status = 0;
         unsigned int    httpPort = 0;
-        char            httpUsername[80];
+        char            httpUsername[80] = {0};
 
         unsigned int    httpsPort = 0;
-        char            httpsUsername[80];
+        char            httpsUsername[80] = {0};
 
         unsigned int    ftpPort = 0;
-        char            ftpUsername[80];
+        char            ftpUsername[80] = {0};
+
 
         status = Ini_ReadFromFile (iniText, INI_FILENAME);
+
+        // TESTING:
+        RecordShowAll (iniText);
 
         /*------------------------------------------------------------------*/
         // [http]
         /*------------------------------------------------------------------*/
-        if (0 == status)
+        if (NO_ERROR == status)
         {
             status = Ini_GetUInt (iniText, "http", "port", &httpPort);
         }
@@ -81,12 +89,12 @@ int main()
         /*------------------------------------------------------------------*/
         // [https]
         /*------------------------------------------------------------------*/
-        if (0 == status)
+        if (NO_ERROR == status)
         {
             status = Ini_GetUInt (iniText, "https", "port", &httpsPort);
         }
 
-        if (0 == status)
+        if (NO_ERROR == status)
         {
             status = Ini_GetStringIntoBuffer (iniText, "https", "username",
                                               &httpsUsername[0],
@@ -96,12 +104,12 @@ int main()
         /*------------------------------------------------------------------*/
         // [ftp]
         /*------------------------------------------------------------------*/
-        if (0 == status)
+        if (NO_ERROR == status)
         {
             status = Ini_GetUInt (iniText, "ftp", "port", &ftpPort);
         }
 
-        if (0 == status)
+        if (NO_ERROR == status)
         {
             status = Ini_GetStringIntoBuffer (iniText, "ftp", "username",
                                               &ftpUsername[0],
@@ -114,7 +122,6 @@ int main()
 
         Ini_Dispose (iniText);
     }
-#endif
 
     return EXIT_SUCCESS;
 }

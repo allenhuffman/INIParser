@@ -49,11 +49,11 @@ int Ini_PutString (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != stringValue))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -68,11 +68,11 @@ int Ini_PutRawString (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != stringValue))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -87,10 +87,12 @@ int Ini_PutInt (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName))
     {
         (void)integerValue;
+
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -105,10 +107,12 @@ int Ini_PutUInt (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName))
     {
         (void)unsignedIntegerValue;
+
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -123,10 +127,12 @@ int Ini_PutDouble (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName))
     {
         (void)doubleValue;
-    }
+
+        status = -1; // TODO
+   }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -141,10 +147,12 @@ int Ini_PutBoolean (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName))
     {
         (void)booleanValue;
+
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -160,10 +168,12 @@ int Ini_PutData (IniText handle, const char sectionName[],
         (NULL != data))
     {
         (void)dataSize;
-    }
+
+         status = -1; // TODO
+   }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;

@@ -308,14 +308,16 @@ bool RecordShow (RecordStruct *record)
 
     if (NULL != record)
     {
+#if DEBUG_RECORDS > 1
         // Really verbose output.
         printf ("0x%p  "
                 "prev: 0x%p "
-                "next: 0x%p "
-                "line: '%s'\n",
+                "next: 0x%p ",
                 (void*)record,
                 (void*)record->prev,
-                (void*)record->next,
+                (void*)record->next);
+#endif
+        printf ("line: '%s'\n",
                 record->line);
 
         status = true;

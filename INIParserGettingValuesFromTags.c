@@ -49,11 +49,11 @@ int Ini_GetPointerToString (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != pointerToString) && (NULL != *pointerToString))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -68,11 +68,11 @@ int Ini_GetStringCopy (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != copyOfString) && (NULL != *copyOfString))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -89,10 +89,12 @@ int Ini_GetStringIntoBuffer (IniText handle, const char sectionName[],
         (NULL != buffer))
     {
         (void)bufferSize;
+
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -107,11 +109,11 @@ int Ini_GetPointerToRawString (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != pointerToString) && (NULL != *pointerToString))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -126,11 +128,11 @@ int Ini_GetRawStringCopy (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != copyOfString) && (NULL != *copyOfString))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -147,10 +149,12 @@ int Ini_GetRawStringIntoBuffer (IniText handle, const char sectionName[],
         (NULL != buffer))
     {
         (void)bufferSize;
+
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -165,11 +169,11 @@ int Ini_GetInt (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != integerValue))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -184,11 +188,11 @@ int Ini_GetUInt (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != unsignedIntegerValue))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -203,11 +207,11 @@ int Ini_GetDouble (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != doubleValue))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -222,11 +226,11 @@ int Ini_GetBoolean (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL == booleanValue))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -241,11 +245,11 @@ int Ini_GetData (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != data) && (NULL != *data) && (NULL != dataSize))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -260,11 +264,11 @@ int Ini_GetInt64 (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != integerValue))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
@@ -280,11 +284,11 @@ int Ini_GetUInt64 (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != unsignedIntegerValue))
     {
-
+        status = -1; // TODO
     }
     else
     {
-        // TODO: NULL pointer error.
+        status = NULL_POINTER_PASSED;
     }
 
     return status;
