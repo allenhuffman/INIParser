@@ -8,7 +8,7 @@
 #include "INIParser.h"
 
 // This file's header
-#include "INIParser.h"
+#include "INIParserInformational.h"
 
 // Other headers
 #include "INIRecords.h"
@@ -38,7 +38,32 @@
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
+// Informational
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+//int Ini_SectionExists (IniText handle, const char sectionName[])
+
+/*--------------------------------------------------------------------------*/
+//int Ini_NumberOfSections (IniText handle)
+
+/*--------------------------------------------------------------------------*/
+//int Ini_NthSectionName (IniText handle, int sectionIndex, char **sectionNamePointer)
+
+/*--------------------------------------------------------------------------*/
+//int Ini_ItemExists (IniText handle, const char sectionName[], const char tagName[])
+
+/*--------------------------------------------------------------------------*/
+//int Ini_NumberOfItems (IniText handle, const char sectionName[])
+
+/*--------------------------------------------------------------------------*/
+//int Ini_NthItemName (IniText handle, const char sectionName[], int itemIndex, char **itemTagNamePointer)
+
+/*--------------------------------------------------------------------------*/
+//int Ini_LineOfLastAccess (IniText handle)
+
+/*--------------------------------------------------------------------------*/
 // Private Functions
 /*--------------------------------------------------------------------------*/
 
-// End of INIParser.c
+// End of INIParserInformational.c

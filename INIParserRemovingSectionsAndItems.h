@@ -1,44 +1,32 @@
+#ifndef INIPARSERREMOVINGSECTIONSANDITEMS_H_INCLUDED
+#define INIPARSERREMOVINGSECTIONSANDITEMS_H_INCLUDED
+
 /*--------------------------------------------------------------------------*/
 // Includes
 /*--------------------------------------------------------------------------*/
-// Compiler headers
-#include <stdio.h>
+#include <stddef.h>     // for size_t
 
-// This projects's header
 #include "INIParser.h"
-
-// This file's header
-#include "INIParser.h"
-
-// Other headers
-#include "INIRecords.h"
-
-/*--------------------------------------------------------------------------*/
-// Constants
-/*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
 // Typedefs
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Global Variables
+// Enums
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Static Variables
+// Constants
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Private Prototypes
+// Prototypes
 /*--------------------------------------------------------------------------*/
+// Removing Sections and Items
+//int     Ini_RemoveSection (IniText handle, const char sectionName[]);
+//int     Ini_RemoveItem (IniText handle, const char sectionName[], const char tagName[]);
 
-/*--------------------------------------------------------------------------*/
-// Public Functions
-/*--------------------------------------------------------------------------*/
+#endif // INIPARSERREMOVINGSECTIONSANDITEMS_H_INCLUDED
 
-/*--------------------------------------------------------------------------*/
-// Private Functions
-/*--------------------------------------------------------------------------*/
-
-// End of INIParser.c
+// End of INIParserRemovingSectionsAndItems.h

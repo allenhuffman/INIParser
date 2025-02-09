@@ -6,10 +6,45 @@
 #include "INIParser.h"
 #include "Utilities.h"
 
+#include "INIRecords.h" // for testing the records.
+
 #define INI_FILENAME "Sample.ini"
 
 int main()
 {
+    // Test the INIRecords.
+    bool status = false;
+
+    RecordHandle handle = RecordInit ();
+
+    if (NULL != handle)
+    {
+        // Write 10 lines...
+        for (int idx = 1; idx <= 10; idx++)
+        {
+            char line[80];
+            snprintf (line, sizeof(line), "This is line %d.", idx);
+
+            status = RecordWrite (handle, line);
+
+            if (false == status)
+            {
+                break;
+            }
+        } // end of for (int idx = 0
+
+        if (true == status)
+        {
+            RecordShowAll (handle);
+        }
+
+        RecordTerm (handle);
+
+        printf ("Done.\n");
+
+    } // end of if (NULL != handle)
+#if 0
+    // TEST CODE
     IniText iniText;
 
     iniText = Ini_New (0); // No automatic sorting.
@@ -79,6 +114,7 @@ int main()
 
         Ini_Dispose (iniText);
     }
+#endif
 
     return EXIT_SUCCESS;
 }

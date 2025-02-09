@@ -1,44 +1,37 @@
+#ifndef INIPARSERINFORMATIONAL_H_INCLUDED
+#define INIPARSERINFORMATIONAL_H_INCLUDED
+
 /*--------------------------------------------------------------------------*/
 // Includes
 /*--------------------------------------------------------------------------*/
-// Compiler headers
-#include <stdio.h>
+#include <stddef.h>     // for size_t
 
-// This projects's header
 #include "INIParser.h"
-
-// This file's header
-#include "INIParser.h"
-
-// Other headers
-#include "INIRecords.h"
-
-/*--------------------------------------------------------------------------*/
-// Constants
-/*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
 // Typedefs
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Global Variables
+// Enums
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Static Variables
+// Constants
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Private Prototypes
+// Prototypes
 /*--------------------------------------------------------------------------*/
+// Informational
+//int     Ini_SectionExists (IniText handle, const char sectionName[]);
+//int     Ini_NumberOfSections (IniText handle);
+//int     Ini_NthSectionName (IniText handle, int sectionIndex, char **sectionNamePointer);
+//int     Ini_ItemExists (IniText handle, const char sectionName[], const char tagName[]);
+//int     Ini_NumberOfItems (IniText handle, const char sectionName[]);
+//int     Ini_NthItemName (IniText handle, const char sectionName[], int itemIndex, char **itemTagNamePointer);
+//int     Ini_LineOfLastAccess (IniText handle);
 
-/*--------------------------------------------------------------------------*/
-// Public Functions
-/*--------------------------------------------------------------------------*/
+#endif // INIPARSERINFORMATIONAL_H_INCLUDED
 
-/*--------------------------------------------------------------------------*/
-// Private Functions
-/*--------------------------------------------------------------------------*/
-
-// End of INIParser.c
+// End of INIParserManagement.h

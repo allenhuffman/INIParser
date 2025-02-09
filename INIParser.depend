@@ -1,0 +1,98 @@
+# depslib dependency file v1.0
+1739125328 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\errnotocvistatus.c
+	<errno.h>
+	"INIParser.h"
+	"ErrnoToCVIStatus.h"
+
+1739125594 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.h
+	<stddef.h>
+	"INIParserGettingValuesFromTags.h"
+	"INIParserInformational.h"
+	"INIParserManagement.h"
+	"INIParserPuttingTagValuePairs.h"
+	"INIParserRemovingSectionsAndItems.h"
+
+1739124901 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparsergettingvaluesfromtags.h
+	<stddef.h>
+	"INIParser.h"
+
+1739124415 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparserinformational.h
+	<stddef.h>
+	"INIParser.h"
+
+1739124451 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparsermanagement.h
+	<stddef.h>
+	"INIParser.h"
+
+1739124394 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparserputtingtagvaluepairs.h
+	<stddef.h>
+	"INIParser.h"
+
+1739124407 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparserremovingsectionsanditems.h
+	<stddef.h>
+	"INIParser.h"
+
+1739125067 c:\users\alspl\onedrive\documents\codeblocks\iniparser\errnotocvistatus.h
+	<stddef.h>
+	"INIParser.h"
+
+1739125267 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParser.h"
+	"INIRecords.h"
+
+1739127644 c:\users\alspl\onedrive\documents\codeblocks\iniparser\inirecords.h
+	<stdbool.h>
+	<stdint.h>
+
+1739125336 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparsergettingvaluesfromtags.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParserGettingValuesFromTags.h"
+	"ErrnoToCVIStatus.h"
+	"INIRecords.h"
+
+1739125504 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparserinformational.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParserInformational.h"
+	"INIRecords.h"
+
+1739125522 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparsermanagement.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParserManagement.h"
+	"ErrnoToCVIStatus.h"
+	"INIRecords.h"
+
+1739125346 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparserputtingtagvaluepairs.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParserPuttingTagValuePairs.h"
+	"ErrnoToCVIStatus.h"
+	"INIRecords.h"
+
+1739125537 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparserremovingsectionsanditems.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParserRemovingSectionsAndItems.h"
+	"INIRecords.h"
+
+1739127561 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\main.c
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"INIParser.h"
+	"Utilities.h"
+	"INIRecords.h"
+
+1739077071 c:\users\alspl\onedrive\documents\codeblocks\iniparser\utilities.h
+
+1739077116 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\utilities.c
+	<ctype.h>
+	<stddef.h>
+	<string.h>
+	"Utilities.h"
+

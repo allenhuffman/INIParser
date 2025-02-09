@@ -8,7 +8,7 @@
 #include "INIParser.h"
 
 // This file's header
-#include "INIParser.h"
+#include "INIParserRemovingSectionsAndItems.h"
 
 // Other headers
 #include "INIRecords.h"
@@ -38,7 +38,13 @@
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
+// Removing Sections and Items
+/*--------------------------------------------------------------------------*/
+//int Ini_RemoveSection (IniText handle, const char sectionName[])
+//int Ini_RemoveItem (IniText handle, const char sectionName[], const char tagName[])
+
+/*--------------------------------------------------------------------------*/
 // Private Functions
 /*--------------------------------------------------------------------------*/
 
-// End of INIParser.c
+// End of INIParserRemovingSectionsAndItems.c

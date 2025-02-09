@@ -1,25 +1,28 @@
+#ifndef INIRECORDS_H_INCLUDED
+#define INIRECORDS_H_INCLUDED
+
 /*--------------------------------------------------------------------------*/
 // Includes
 /*--------------------------------------------------------------------------*/
-// Compiler headers
-#include <stdio.h>
-
-// This projects's header
-#include "INIParser.h"
-
-// This file's header
-#include "INIParser.h"
-
-// Other headers
-#include "INIRecords.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 /*--------------------------------------------------------------------------*/
 // Constants
 /*--------------------------------------------------------------------------*/
+#define DEBUG_RECORDS 0
 
 /*--------------------------------------------------------------------------*/
 // Typedefs
 /*--------------------------------------------------------------------------*/
+typedef void *RecordHandle;
+
+typedef struct rec_t
+{
+    struct rec_t    *next;      // Pointer to next record structure.
+    struct rec_t    *prev;      // Pointer to previous record structure.
+    const char      line[];     //
+} RecordStruct;
 
 /*--------------------------------------------------------------------------*/
 // Global Variables
@@ -30,15 +33,34 @@
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Private Prototypes
+// Public Prototypes
 /*--------------------------------------------------------------------------*/
+// Init/Term
 
-/*--------------------------------------------------------------------------*/
-// Public Functions
-/*--------------------------------------------------------------------------*/
+RecordHandle *RecordInit (void);
 
-/*--------------------------------------------------------------------------*/
-// Private Functions
-/*--------------------------------------------------------------------------*/
+bool RecordTerm (RecordHandle *handle);
 
-// End of INIParser.c
+// Read/Write
+
+RecordStruct *RecordRead (RecordHandle *handle);
+
+bool RecordWrite (RecordHandle *handle, const char *line);
+
+unsigned int RecordGetCount (RecordHandle *handle);
+
+// Delete/Seek
+
+bool RecordDelete (RecordHandle *handle, RecordStruct *record);
+
+bool RecordSeek (RecordHandle *handle, unsigned int recordNumber);
+
+// Debug Functions
+
+bool RecordShow (RecordStruct *record);
+
+bool RecordShowAll (RecordHandle *handle);
+
+#endif // INIRECORDS_H_INCLUDED
+
+// End of INIRecords.h
