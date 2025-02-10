@@ -13,8 +13,10 @@
 
 void PrintHeader (const char *header)
 {
-    printf ("-------------------------------------------------------------------------------\n"
-            "%s\n", header);
+    printf ("\n"
+            "%s\n"
+            "-------------------------------------------------------------------------------\n",
+            header);
 }
 
 int main()
@@ -28,6 +30,9 @@ int main()
         "",
         // Invalid
         "Hello World!",
+        "=",
+        "=Value",
+        "Tag=",
         // Comments
         "; This is a comment",
         ";This is also a comment",
@@ -43,11 +48,26 @@ int main()
         NULL
     };
 
-    // Test Comment parser.
-    PrintHeader ("Comments:");
     int idx = 0;
+
+    PrintHeader ("Line Types:");
+    idx = 0;
     while (NULL != testLines[idx])
     {
+        printf ("%2d) '%s'%-*s%s\n",
+                idx, testLines[idx],
+                (int)(40-strlen(testLines[idx])-2), "",
+                LineTypeToStringPtr (GetLineType (testLines[idx])));
+
+        idx++;
+    }
+
+    // Test Comment parser.
+    PrintHeader ("Comments:");
+    idx = 0;
+    while (NULL != testLines[idx])
+    {
+        memset (buffer, 0x0, sizeof(buffer));
         printf ("%2d) ", idx);
         GetCommentFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
         idx++;

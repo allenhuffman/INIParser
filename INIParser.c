@@ -54,6 +54,27 @@ LineTypeEnum GetLineType (const char line[])
         printf ("\n");
 #endif // DEBUG_INIPARSER
 
+        if (IsLineEmpty (line))
+        {
+            lineType = LINE_EMPTY;
+        }
+        else if (IsLineAComment (line))
+        {
+            lineType = LINE_COMMENT;
+        }
+        else if (IsLineASection (line))
+        {
+            lineType = LINE_SECTION;
+        }
+        else if (IsLineATagValue (line))
+        {
+            lineType = LINE_TAGVALUE;
+        }
+        else
+        {
+            lineType = LINE_INVALID;
+        }
+/*
         if ('\0' == line[0]) // TODO: '\0'
         {
             lineType = LINE_EMPTY;
@@ -68,8 +89,9 @@ LineTypeEnum GetLineType (const char line[])
         }
         else if (NULL != strchr(line, '=')) // TODO: improve!
         {
-            lineType = LINE_KEYVALUE;
+            lineType = LINE_TAGVALUE;
         }
+*/
     }
 
     return lineType;
@@ -86,14 +108,21 @@ bool GetCommentFromLine (const char line[], char *commentPtr,
         if (LINE_COMMENT == GetLineType (line))
         {
             size_t lineLen = strlen (line);
+            size_t pos = 0;
 
-            if (lineLen > 1)
+            // Skip whitespace looking for the ';'.
+            while ((pos < lineLen) && (iswspace (line[pos])))
             {
-                strncpy (commentPtr, &line[1], commentSize);
+                pos++;
+            }
+
+            // Here we are at the end of the line, or found a character.
+            if (';' == line[pos])
+            {
+                strncpy (commentPtr, &line[pos], commentSize);
                 // strncpy() does not add the '\0' if it copies to max.
                 commentPtr[commentSize] = '\0';
 
-                // TODO: possible bug if line is size of buffer.
                 status = true;
             }
         } // end of if (LINE_COMMENT
@@ -165,47 +194,36 @@ bool GetTagFromLine (const char line[], char *tagPtr, size_t tagSize)
 
     if ((NULL != line) && (NULL != tagPtr) && (0 != tagSize))
     {
-        char newLine[LINE_MAX_LEN] = {0};
+        char tempLine[LINE_MAX_LEN] = {0};
 
         // Remove comments.
-        RemoveComments (line, newLine, sizeof(newLine));
+        RemoveComments (line, tempLine, sizeof(tempLine));
 
-        if (LINE_KEYVALUE == GetLineType (newLine))
+        if (LINE_TAGVALUE == GetLineType (tempLine))
         {
+            char newLine[LINE_MAX_LEN] = {0};
+
+            RemoveSpacesAroundEqual (tempLine, newLine, sizeof(newLine));
+
             const char *equalPtr = strchr (newLine, '=');
 
             if (NULL != equalPtr) // '=' found.
             {
-                int startPos = 0;
-                int endPos = (equalPtr - &newLine[0] - 1);
-
-                // Scan forward to first non whitespace character.
-                while (startPos < endPos && iswspace (newLine[startPos]))
-                {
-                    startPos++;
-                }
-
-                // Scan backwards to first non whitespace character.
-                while (endPos > startPos && iswspace (newLine[endPos]))
-                {
-                    endPos--;
-                }
-
                 // Length from first character to '='.
-                size_t tagLen = endPos - startPos + 1;
+                size_t tagLen = (equalPtr - &newLine[0]);
 
                 if (tagLen > tagSize)
                 {
                     tagLen = tagSize;
                 }
 
-                strncpy (tagPtr, &newLine[startPos], tagLen);
+                strncpy (tagPtr, &newLine[0], tagLen);
                 // strncpy() does not add the '\0' if it copies to max.
                 tagPtr[tagLen] = '\0';
 
                 status = true;
             } // if (NULL != equalPtr)
-        } // end of if (LINE_KEYVALUE
+        } // end of if (LINE_TAGVALUE
 
 #if DEBUG_INIPARSER > 0
         ShowResult (line, tagPtr, status);
@@ -227,7 +245,7 @@ bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize)
         // Remove comments.
         RemoveComments (line, newLine, sizeof(newLine));
 
-        if (LINE_KEYVALUE == GetLineType (newLine))
+        if (LINE_TAGVALUE == GetLineType (newLine))
         {
             const char *equalPtr = strchr (newLine, '=');
 
@@ -269,7 +287,7 @@ bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize)
                     status = true;
                 }
             } // end of if (NULL != equalPtr)
-        } // end of if (LINE_KEYVALUE
+        } // end of if (LINE_TAGVALUE
 
 #if DEBUG_INIPARSER > 0
         ShowResult (line, valuePtr, status);
@@ -303,8 +321,8 @@ const char *LineTypeToStringPtr (LineTypeEnum lineType)
             ptr = "Section";
             break;
 
-        case LINE_KEYVALUE:
-            ptr = "Key=Value";
+        case LINE_TAGVALUE:
+            ptr = "Tag=Value";
             break;
     }
 
@@ -320,6 +338,7 @@ bool RemoveComments (const char line[], char *newLinePtr, size_t newLineSize)
 
     if ((NULL != line) && (NULL != newLinePtr) && (0 != newLineSize))
     {
+        // Find ';'
         const char *ptr = strchr (line, ';');
 
         if (NULL != ptr)
@@ -346,6 +365,214 @@ bool RemoveComments (const char line[], char *newLinePtr, size_t newLineSize)
             newLinePtr[newLineSize] = '\0';
         }
     }
+
+    return status;
+}
+
+/*--------------------------------------------------------------------------*/
+bool RemoveSpacesAroundEqual (const char line[], char *newLinePtr,
+                              size_t newLineSize)
+{
+    bool status = false;
+
+    if ((NULL != line) && (NULL != newLinePtr) && (0 != newLineSize))
+    {
+        // Find '='.
+        const char *equalPtr = strchr (line, '=');
+
+        if (NULL != equalPtr) // If '=' was found...
+        {
+            // Scan back from equal to find first non whitespace character.
+            int endPos = (equalPtr - &line[0] - 1);
+
+            while (endPos > 0 && iswspace (line[endPos]))
+            {
+                endPos--;
+            }
+
+            // Copy up to this point to the new string.
+            strncpy (newLinePtr, line, endPos + 1);
+            // Appent the '='
+            strcat (newLinePtr, "=");
+
+            // Scan forward from equal to first non whitespace character.
+            size_t startPos = (equalPtr - &line[0] + 1);
+
+            while (startPos < strlen(line) && iswspace (line[startPos]))
+            {
+                startPos++;
+            }
+
+            // Append from here to the end to the new string.
+            strcat (newLinePtr, &line[startPos]);
+
+            status = true;
+        }
+    }
+
+    return status;
+}
+
+/*--------------------------------------------------------------------------*/
+// For a line to be empty, it must have nothing or only whitespace.
+bool IsLineEmpty (const char line[])
+{
+    bool status = false;
+
+    if (NULL != line)
+    {
+        // Step 1: Look for any non-whitespace.
+        size_t lineLen = strlen (line);
+        size_t pos = 0;
+
+        while (pos < lineLen)
+        {
+            // If non-whitespace found, this is not an empty line.
+            if (!iswspace (line[pos]))
+            {
+                status = false;
+                break;
+            }
+
+            pos++;
+        }
+    }
+
+    return status;
+}
+
+/*--------------------------------------------------------------------------*/
+// For a line to be a comment, it must have a ";" as the first non-whitespace
+// character.
+bool IsLineAComment (const char line[])
+{
+    bool status = false;
+
+    if (NULL != line)
+    {
+        size_t lineLen = strlen (line);
+        size_t pos = 0;
+
+        // Skip any whitespace, looking for ";"
+        while ((pos < lineLen) && iswspace (line[pos]))
+        {
+            pos++;
+        }
+
+        // Here, we found our first non-whitespace character. If it is
+        // a semicolon, this is a valid comment line.
+        if (';' == line[pos])
+        {
+            status = true;
+        }
+    }
+
+    return status;
+}
+
+/*--------------------------------------------------------------------------*/
+// For a line to be a section, it must have a "[" as the first non-whitespace
+// character, then printable character(s), then a "]" with nothing allowed
+// after it other than a ";" comment.
+bool IsLineASection (const char line[])
+{
+    bool status = false;
+
+    if (NULL != line)
+    {
+        size_t lineLen = strlen (line);
+        size_t pos = 0;
+
+        // Step 1: Find the first "[".
+
+        // Skip any whitespace.
+        while ((pos < lineLen) && iswspace (line[pos]))
+        {
+            pos++;
+        }
+
+        // Here, we found our first non-whitespace character. If it is
+        // a "[", this is a valid comment line.
+        if ('[' == line[pos])
+        {
+            // Step 2: Fine some text.
+
+            // Now we need to find at least one non-whitespace character.
+            // Skip any whitespace.
+            while ((pos < lineLen) && iswspace (line[pos]))
+            {
+                pos++;
+            }
+            // Here, we found another non-whitespace character. If it
+            // is NOT "]", we can continue;
+
+            if (']' != line[pos])
+            {
+                // Step 3: Find the closing "]".
+
+                // Not we need to scan forward looking for the "]".
+                while (pos < lineLen)
+                {
+                    if (']' == line[pos])
+                    {
+                        status = true;
+                        break;
+                    }
+
+                    pos++;
+                }
+            } // end of if (']'
+        } // end of if ('['
+    } // end of if (NULL
+
+    return status;
+}
+
+
+/*--------------------------------------------------------------------------*/
+// For a line to be a valid "Tag = Value", it must contain printable
+// character(s), then an equal, then printable character(s).
+bool IsLineATagValue (const char line[])
+{
+    bool status = false;
+
+    if (NULL != line)
+    {
+        char *equalPtr = strchr (line, '=');
+
+        // Only continue if the line has an '='
+        if (NULL != equalPtr)
+        {
+            size_t lineLen = strlen (line);
+            size_t pos = 0;
+            size_t endPos = (equalPtr - &line[0]);
+
+            // Skip any whitespace.
+            while ((pos < endPos) && iswspace (line[pos]))
+            {
+                pos++;
+            }
+
+            if (pos < endPos)
+            {
+                // Found some before the '='. Good.
+
+                // Now look for some after the '='.
+
+                pos = endPos + 1;
+
+                while (pos < lineLen)
+                {
+                    if (isprint (line[pos]))
+                    {
+                        // Found non-whitespace.
+                        status = true;
+                        break;
+                    }
+                }
+            } // end of if (pos < endPos)
+        } // end of if (NULL != equalPtr)
+    } // end of if (NULL != line)
 
     return status;
 }

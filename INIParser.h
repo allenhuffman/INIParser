@@ -42,7 +42,7 @@ typedef enum
     LINE_EMPTY,
     LINE_COMMENT,
     LINE_SECTION,
-    LINE_KEYVALUE,
+    LINE_TAGVALUE,
 } LineTypeEnum;
 
 /*--------------------------------------------------------------------------*/
@@ -69,6 +69,16 @@ bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize);
 const char *LineTypeToStringPtr (LineTypeEnum lineType);
 
 bool RemoveComments (const char line[], char *newLinePtr, size_t newLineSize);
+
+bool RemoveSpacesAroundEqual (const char line[], char *newLinePtr, size_t newLineSize);
+
+bool IsLineEmpty (const char line[]);
+
+bool IsLineAComment (const char line[]);
+
+bool IsLineASection (const char line[]);
+
+bool IsLineATagValue (const char line[]);
 
 #endif // INIPARSER_H_INCLUDED
 
