@@ -74,24 +74,6 @@ LineTypeEnum GetLineType (const char line[])
         {
             lineType = LINE_INVALID;
         }
-/*
-        if ('\0' == line[0]) // TODO: '\0'
-        {
-            lineType = LINE_EMPTY;
-        }
-        else if (';' == line[0]) // Check for Comment
-        {
-            lineType = LINE_COMMENT;
-        }
-        else if ('[' == line[0]) // TODO: also check for ']'
-        {
-            lineType = LINE_SECTION;
-        }
-        else if (NULL != strchr(line, '=')) // TODO: improve!
-        {
-            lineType = LINE_TAGVALUE;
-        }
-*/
     }
 
     return lineType;
@@ -150,32 +132,59 @@ bool GetSectionFromLine (const char line[], char *sectionPtr,
 
         if (LINE_SECTION == GetLineType (newLine))
         {
-            // Belt and suspenders.
-            if ('[' == newLine[0]) // First character must be a '['
+            size_t lineLen = strlen (newLine);
+            size_t startPos = 0;
+
+            // 1. Skip any leading whitespace.
+            while ((startPos < lineLen) && iswspace (newLine[startPos]))
             {
-                const char *endPtr = NULL;
+                startPos++;
+            }
 
-                // Find end of Section Name
-                endPtr = strchr (newLine, ']');
+            // This must be a '['.
+            if ('[' == newLine[startPos])
+            {
+                // Skip the '['.
+                startPos++;
 
-                if (NULL != endPtr) // Start '[' found.
+                // Skip any whitespace.
+                while ((startPos < lineLen) && iswspace (newLine[startPos]))
                 {
-                    size_t sectionLen = (endPtr - &newLine[1]);
+                    startPos++;
+                }
 
+                // Now backup to find the ']'.
+                size_t endPos = lineLen - 1;
+                while ((endPos > startPos) && iswspace (newLine[endPos]))
+                {
+                    endPos--;
+                }
+
+                // This must be a ']'.
+                if (']' == newLine[endPos])
+                {
+                    // Skip the ']'
+                    endPos--;
+
+                    // Skip any whitespace
+                    while ((endPos > startPos) && iswspace (newLine[endPos]))
+                    {
+                        endPos--;
+                    }
+
+                    // Now we know what to copy.
+                    size_t sectionLen = endPos - startPos + 1;
                     if (sectionLen > sectionSize)
                     {
                         sectionLen = sectionSize;
                     }
-
-                    // Copy inbetween over.
-                    strncpy (sectionPtr, &newLine[1], sectionLen);
+                    strncpy (sectionPtr, &newLine[startPos], sectionLen);
                     // strncpy() does not add the '\0' if it copies to max.
                     sectionPtr[sectionLen] = '\0';
 
-                    // TODO: should we trim? "[ this is a section ]"?
                     status = true;
-                }
-            } // end of if ('[' == line[0])
+                } // end of if (']'
+            } // end of if ('['
         } // end of if (LINE_SECTION
 
 #if DEBUG_INIPARSER > 0

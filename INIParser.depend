@@ -4,7 +4,7 @@
 	"INIParser.h"
 	"ErrnoToCVIStatus.h"
 
-1739141022 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.h
+1739155286 c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.h
 	<stdbool.h>
 	<stddef.h>
 	"INIParserGettingValuesFromTags.h"
@@ -37,7 +37,7 @@
 	<stddef.h>
 	"INIParser.h"
 
-1739142651 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.c
+1739157436 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\iniparser.c
 	<ctype.h>
 	<stdio.h>
 	<string.h>
@@ -84,7 +84,7 @@
 	"INIParserRemovingSectionsAndItems.h"
 	"INIRecords.h"
 
-1739142489 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\main.c
+1739156182 source:c:\users\alspl\onedrive\documents\codeblocks\iniparser\main.c
 	<ctype.h>
 	<stdio.h>
 	<stdlib.h>
