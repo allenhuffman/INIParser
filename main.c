@@ -43,16 +43,17 @@ void ReadAndShow (RecordHandle *handle, const char *section, const char *tag);
 /*--------------------------------------------------------------------------*/
 // Public Functions
 /*--------------------------------------------------------------------------*/
+
+#define REAL_TEST
 int main (int argc, char **argv)
 {
     (void)argc; // Not used.
     (void)argv; // Not used.
 
-    printf ("Becfore - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+    printf ("Before - Allocated: %u\n", (unsigned int)GetSizeAllocated());
 
-    RecordHandle *handle = RecordInit ();
-
-    handle = LoadINI ("Sample.ini");
+#ifdef REAL_TEST
+    RecordHandle *handle = LoadINI ("Sample.ini");
 
     if (NULL != handle)
     {
@@ -61,7 +62,11 @@ int main (int argc, char **argv)
     }
 
     CloseINI (handle);
-/*
+#endif
+
+#ifdef MANUAL_TEST
+    RecordHandle *handle = RecordInit ();
+
     if (NULL != handle)
     {
         // Create a simple .ini file with comments
@@ -122,7 +127,8 @@ int main (int argc, char **argv)
 
         RecordTerm (handle);
     }
-*/
+#endif // MANUAL_TEST
+
     printf ("After Free - Allocated: %u\n", (unsigned int)GetSizeAllocated());
 
     return EXIT_SUCCESS;
