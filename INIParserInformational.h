@@ -24,7 +24,8 @@
 // Prototypes
 /*--------------------------------------------------------------------------*/
 // Informational
-//int     Ini_SectionExists (IniText handle, const char sectionName[]);
+int     Ini_SectionExists (IniText handle, const char sectionName[]);
+
 //int     Ini_NumberOfSections (IniText handle);
 //int     Ini_NthSectionName (IniText handle, int sectionIndex, char **sectionNamePointer);
 //int     Ini_ItemExists (IniText handle, const char sectionName[], const char tagName[]);

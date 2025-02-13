@@ -130,7 +130,7 @@ bool ParseTagValue (const char *line, char *tag, size_t tagSize,
                 tag[endPos + 1] = '\0';
             }
 
-            strncpy (right, equalPtr+1, sizeof(right));
+            strncpy (right, equalPtr+1, sizeof(right)-1); // compiler warning fixed
             //TrimString (right, value, valueSize, true);
             if (FindFirstAndLastNonWhitespace (right, &startPos, &endPos, false))
             {

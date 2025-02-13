@@ -41,7 +41,12 @@
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-//int Ini_SectionExists (IniText handle, const char sectionName[])
+// If the section exists, a 1 is returned.
+// If the section does not exist, a 0 is returned.
+int Ini_SectionExists (IniText handle, const char sectionName[])
+{
+    return RecordSectionExists (handle, sectionName);
+}
 
 /*--------------------------------------------------------------------------*/
 //int Ini_NumberOfSections (IniText handle)

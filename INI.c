@@ -874,6 +874,19 @@ static RecordStruct *RecordGetTag (RecordHandle *handle, RecordStruct *record,
     return tagRecord;
 }
 
+/*--------------------------------------------------------------------------*/
+bool RecordSectionExists (RecordHandle *handle, const char *section)
+{
+    bool status = false;
+
+    if (NULL != RecordGetSection (handle, section))
+    {
+        status = true;
+    }
+
+    return status;
+}
+
 // Debug
 
 

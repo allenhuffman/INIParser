@@ -46,6 +46,8 @@ typedef enum
 #define SECTION_MAX_LEN 80
 #define TAG_MAX_LEN     80
 #define VALUE_MAX_LEN   80
+#define MAX_PATHNAME_LEN 256 // TODO
+
 
 /*--------------------------------------------------------------------------*/
 // Prototypes

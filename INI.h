@@ -51,6 +51,9 @@ bool RecordWriteTagValue (RecordHandle *handle, const char *tag, const char *val
 bool RecordGetNext (RecordHandle *handle, char *buffer, size_t bufferSize);
 bool RecordSeekToStart (RecordHandle *handle);
 
+// HACK: For Ini_SectionExists()
+bool RecordSectionExists (RecordHandle *handle, const char *section);
+
 // Debug
 bool RecordShowAll (RecordHandle *handle);
 
