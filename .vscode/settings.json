@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "iniparser.h": "c",
-        "iniparsergettingvaluesfromtags.h": "c"
-    }
-}
