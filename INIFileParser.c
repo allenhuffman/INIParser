@@ -135,7 +135,7 @@ bool ParseTagValue (const char *line, char *tag, size_t tagSize,
             if (FindFirstAndLastNonWhitespace (right, &startPos, &endPos, false))
             {
                 memcpy (value, &right[startPos], endPos-startPos + 1);
-                value[endPos + 1] = '\0';
+                value[endPos-startPos + 1] = '\0';
             }
 
             status = true;

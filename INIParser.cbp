@@ -33,8 +33,12 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename=".gitattributes" />
-		<Unit filename=".gitignore" />
+		<Unit filename=".gitattributes">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename=".gitignore">
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="ErrnoToCVIStatus.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -47,60 +51,39 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="INIFileParser.h" />
-		<Unit filename="INIParser.c">
+		<Unit filename="INIFileParserTest.c">
 			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
 		</Unit>
+		<Unit filename="INIFileParserTest.h" />
 		<Unit filename="INIParser.h" />
 		<Unit filename="INIParserGettingValuesFromTags.c">
 			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserGettingValuesFromTags.h" />
 		<Unit filename="INIParserInformational.c">
 			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserInformational.h" />
 		<Unit filename="INIParserManagement.c">
 			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserManagement.h" />
 		<Unit filename="INIParserPuttingTagValuePairs.c">
 			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserPuttingTagValuePairs.h" />
 		<Unit filename="INIParserRemovingSectionsAndItems.c">
 			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserRemovingSectionsAndItems.h" />
-		<Unit filename="INIRecords.c">
-			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
-		<Unit filename="INIRecords.h" />
+		<Unit filename="IniTest.ini" />
 		<Unit filename="MyMalloc.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="MyMalloc.h" />
 		<Unit filename="README.md" />
 		<Unit filename="Sample.ini" />
-		<Unit filename="Utilities.c">
-			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
-		<Unit filename="Utilities.h" />
+		<Unit filename="Sample2.ini" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

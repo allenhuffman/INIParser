@@ -4,6 +4,7 @@
 // Compiler headers
 #include <stdio.h>
 #include <stdlib.h> // for EXIT_SUCCESS
+#include <string.h> // for memset();
 
 // This project's header
 #include "INIParser.h"
@@ -126,6 +127,8 @@ int main (int argc, char **argv)
         else
         {
             RecordShowAll (iniTxt);
+
+            printf ("\n");
 
             int booleanValue = 0;
 
