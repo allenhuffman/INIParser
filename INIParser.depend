@@ -109,13 +109,125 @@
 	<string.h>
 	"INIRecords.h"
 
-1739463276 source:e:\allen c. huffmans drive\github\iniparser\errnotocvistatus.c
+1739475612 source:e:\allen c. huffmans drive\github\iniparser\errnotocvistatus.c
 	<errno.h>
+	<stdio.h>
 	"ErrnoToCVIStatus.h"
 
-1739463284 e:\allen c. huffmans drive\github\iniparser\errnotocvistatus.h
-	<stddef.h>
+1739463298 e:\allen c. huffmans drive\github\iniparser\errnotocvistatus.h
 
 1739463284 source:e:\allen c. huffmans drive\github\iniparser\errnotocvistatus.h
 	<stddef.h>
+
+1739477940 source:e:\allen c. huffmans drive\github\iniparser\ini.c
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"INI.h"
+	"MyMalloc.h"
+
+1739475870 e:\allen c. huffmans drive\github\iniparser\ini.h
+	<stdbool.h>
+	<stddef.h>
+
+1739463312 e:\allen c. huffmans drive\github\iniparser\mymalloc.h
+	<stddef.h>
+
+1739477588 source:e:\allen c. huffmans drive\github\iniparser\inifileparser.c
+	<ctype.h>
+	<stdio.h>
+	<string.h>
+	"INIFileParser.h"
+
+1739464124 e:\allen c. huffmans drive\github\iniparser\inifileparser.h
+	<stdbool.h>
+	<stddef.h>
+	<stdio.h.>
+	"INI.h"
+
+1739465024 source:e:\allen c. huffmans drive\github\iniparser\inifileparsertest.c
+	<ctype.h>
+	<stdbool.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"INIFileParser.h"
+	"MyMalloc.h"
+
+1739477798 source:e:\allen c. huffmans drive\github\iniparser\iniparsergettingvaluesfromtags.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"INIParser.h"
+	"INIParserGettingValuesFromTags.h"
+	"ErrnoToCVIStatus.h"
+	"INIFileParser.h"
+
+1739464574 e:\allen c. huffmans drive\github\iniparser\iniparser.h
+	<stdbool.h>
+	<stddef.h>
+	"INIParserGettingValuesFromTags.h"
+	"INIParserInformational.h"
+	"INIParserManagement.h"
+	"INIParserPuttingTagValuePairs.h"
+	"INIParserRemovingSectionsAndItems.h"
+	"INI.h"
+	"INIFileParser.h"
+
+1739462946 e:\allen c. huffmans drive\github\iniparser\iniparsergettingvaluesfromtags.h
+	<stddef.h>
+	"INIParser.h"
+
+1739225334 e:\allen c. huffmans drive\github\iniparser\iniparserinformational.h
+	<stddef.h>
+	"INIParser.h"
+
+1739225334 e:\allen c. huffmans drive\github\iniparser\iniparsermanagement.h
+	<stddef.h>
+	"INIParser.h"
+
+1739225334 e:\allen c. huffmans drive\github\iniparser\iniparserputtingtagvaluepairs.h
+	<stddef.h>
+	"INIParser.h"
+
+1739225334 e:\allen c. huffmans drive\github\iniparser\iniparserremovingsectionsanditems.h
+	<stddef.h>
+	"INIParser.h"
+
+1739463966 source:e:\allen c. huffmans drive\github\iniparser\iniparserinformational.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParserInformational.h"
+
+1739477690 source:e:\allen c. huffmans drive\github\iniparser\iniparsermanagement.c
+	<stdio.h>
+	<string.h>
+	"INIParser.h"
+	"INIParserManagement.h"
+	"ErrnoToCVIStatus.h"
+	"INI.h"
+
+1739474010 source:e:\allen c. huffmans drive\github\iniparser\iniparserputtingtagvaluepairs.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParserPuttingTagValuePairs.h"
+	"ErrnoToCVIStatus.h"
+
+1739463972 source:e:\allen c. huffmans drive\github\iniparser\iniparserremovingsectionsanditems.c
+	<stdio.h>
+	"INIParser.h"
+	"INIParserRemovingSectionsAndItems.h"
+
+1739478064 source:e:\allen c. huffmans drive\github\iniparser\main.c
+	<stdio.h>
+	<stdlib.h>
+	"INIParser.h"
+	"MyMalloc.h"
+
+1739456712 source:e:\allen c. huffmans drive\github\iniparser\mymalloc.c
+	<stdlib.h>
+	<string.h>
+	<inttypes.h>
+	<stdio.h>
 

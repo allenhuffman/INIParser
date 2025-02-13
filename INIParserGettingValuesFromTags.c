@@ -269,7 +269,7 @@ int Ini_GetBoolean (IniText handle, const char sectionName[],
     int status = NO_ERROR;
 
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
-        (NULL == booleanValue))
+        (NULL != booleanValue))
     {
         char value[VALUE_MAX_LEN] = {0};
 

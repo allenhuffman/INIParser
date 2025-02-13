@@ -68,6 +68,7 @@ void Ini_Dispose (IniText handle)
 int Ini_WriteToFile (IniText handle, const char pathname[])
 {
     int status = NO_ERROR;
+    char buffer[LINE_MAX_LEN];
 
     if (NULL != handle)
     {
@@ -80,18 +81,26 @@ int Ini_WriteToFile (IniText handle, const char pathname[])
         else
         {
             // Open file for writing.
-            fp = fopen (pathname, "w+"); // Overwrite
+            fp = fopen (pathname, "w"); // Overwrite
+        }
 
-            if (NULL == fp)
-            {
+        if (NULL != fp)
+        {
+            RecordSeekToStart (handle);
 
-                fclose (fp);
-            }
-            else // File could not be created.
+            while (RecordGetNext (handle, buffer, sizeof(buffer)))
             {
-                // Use errno
-                status = ErrnoToCVIStatus (errno);
+                // TODO: error checking.
+                fputs (buffer, fp);
             }
+
+            fclose (fp);
+        }
+        else // File could not be created.
+        {
+            // Use errno
+            printf ("Unable to create: '%s'\n", pathname);
+            status = ErrnoToCVIStatus (errno);
         }
     }
 

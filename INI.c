@@ -87,6 +87,8 @@ static bool RecordInsertAfter (RecordHandle *handle, RecordStruct *record,
 static bool RecordReplace (RecordHandle *handle, RecordStruct *record,
                            RecordStruct *newRecord);
 
+bool RecordToString (RecordStruct *record, char *buffer, size_t bufferSize);
+
 // Debug
 static bool RecordShow (RecordStruct *record);
 
@@ -900,11 +902,93 @@ bool RecordShowAll (RecordHandle *handle)
     return status;
 }
 
+/*--------------------------------------------------------------------------*/
+bool RecordGetNext (RecordHandle *handle, char *buffer, size_t bufferSize)
+{
+    bool status = false;
+
+    if ((NULL != handle) && (NULL != buffer) && (0 != bufferSize))
+    {
+        RecordIndexStruct *records = (RecordIndexStruct*)handle;
+        RecordStruct *tempRecord = records->nextOut;
+
+        if (NULL != tempRecord)
+        {
+            RecordToString (tempRecord, buffer, bufferSize);
+
+            records->nextOut = tempRecord->next;
+
+            status = true;
+        }
+    }
+
+    return status;
+}
+
+/*--------------------------------------------------------------------------*/
+bool RecordSeekToStart (RecordHandle *handle)
+{
+    bool status = false;
+
+    if (NULL != handle)
+    {
+        RecordIndexStruct *records = (RecordIndexStruct*)handle;
+        records->nextOut = records->first;
+    }
+
+    return status;
+}
+
+bool RecordToString (RecordStruct *record, char *buffer, size_t bufferSize)
+{
+    bool status = false;
+
+    if (NULL != record)
+    {
+        switch (record->type)
+        {
+            default:
+            case RECORD_TYPE_UNKNOWN:
+                if (NULL != record->unknown)
+                {
+                    snprintf (buffer, bufferSize, "%s\n", record->unknown);
+                }
+                break;
+
+            case RECORD_TYPE_COMMENT:
+                if (NULL != record->comment)
+                {
+                    snprintf (buffer, bufferSize, ";%s\n", record->comment);
+                }
+                break;
+
+            case RECORD_TYPE_SECTION:
+                if (NULL != record->section)
+                {
+                    snprintf (buffer, bufferSize, "[%s]\n", record->section);
+                }
+                break;
+
+            case RECORD_TYPE_TAGVALUE:
+                if ((NULL != record->tag) && (NULL != record->value))
+                {
+                    snprintf (buffer, bufferSize, "%s=%s\n", record->tag, record->value);
+                }
+                break;
+        }
+
+        status = true;
+    }
+
+    return status;
+}
+
 // Debug
 /*--------------------------------------------------------------------------*/
 bool RecordShow (RecordStruct *record)
 {
     bool status = false;
+    char buffer[80] = {0};
 
     if (NULL != record)
     {
@@ -917,39 +1001,12 @@ bool RecordShow (RecordStruct *record)
                 (void*)record->prev,
                 (void*)record->next);
 #endif
-        switch (record->type)
+        if (RecordToString (record, buffer, sizeof(buffer)))
         {
-            default:
-            case RECORD_TYPE_UNKNOWN:
-                if (NULL != record->unknown)
-                {
-                    printf ("%s\n", record->unknown);
-                }
-                break;
+            printf ("%s", buffer);
 
-            case RECORD_TYPE_COMMENT:
-                if (NULL != record->comment)
-                {
-                    printf (";%s\n", record->comment);
-                }
-                break;
-
-            case RECORD_TYPE_SECTION:
-                if (NULL != record->section)
-                {
-                    printf ("[%s]\n", record->section);
-                }
-                break;
-
-            case RECORD_TYPE_TAGVALUE:
-                if ((NULL != record->tag) && (NULL != record->value))
-                {
-                    printf ("%s=%s\n", record->tag, record->value);
-                }
-                break;
+            status = true;
         }
-
-        status = true;
     }
 
     return status;

@@ -47,6 +47,10 @@ bool RecordWriteSectionTagValue (RecordHandle *handle, const char *section,
                                  const char *tag, const char *value);
 bool RecordWriteTagValue (RecordHandle *handle, const char *tag, const char *value);
 
+// Record to line (for writing to a file)
+bool RecordGetNext (RecordHandle *handle, char *buffer, size_t bufferSize);
+bool RecordSeekToStart (RecordHandle *handle);
+
 // Debug
 bool RecordShowAll (RecordHandle *handle);
 

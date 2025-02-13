@@ -126,15 +126,15 @@ bool ParseTagValue (const char *line, char *tag, size_t tagSize,
             //TrimString (left, tag, tagSize, false);
             if (FindFirstAndLastNonWhitespace (left, &startPos, &endPos, false))
             {
-                memcpy (tag, &line[startPos], endPos-startPos + 1);
+                memcpy (tag, &left[startPos], endPos-startPos + 1);
                 tag[endPos + 1] = '\0';
             }
 
             strncpy (right, equalPtr+1, sizeof(right));
             //TrimString (right, value, valueSize, true);
-            if (FindFirstAndLastNonWhitespace (left, &startPos, &endPos, false))
+            if (FindFirstAndLastNonWhitespace (right, &startPos, &endPos, false))
             {
-                memcpy (value, &line[startPos], endPos-startPos + 1);
+                memcpy (value, &right[startPos], endPos-startPos + 1);
                 value[endPos + 1] = '\0';
             }
 

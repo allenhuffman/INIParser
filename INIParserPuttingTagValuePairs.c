@@ -48,7 +48,10 @@ int Ini_PutString (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != stringValue))
     {
-        status = -1; // TODO
+        if (!RecordWriteSectionTagValue (handle, sectionName, tagName, stringValue))
+        {
+            status = -1; // TODO
+        }
     }
     else
     {
@@ -67,7 +70,10 @@ int Ini_PutRawString (IniText handle, const char sectionName[],
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName) &&
         (NULL != stringValue))
     {
-        status = -1; // TODO
+        if (!RecordWriteSectionTagValue (handle, sectionName, tagName, stringValue))
+        {
+            status = -1; // TODO
+        }
     }
     else
     {
@@ -85,9 +91,14 @@ int Ini_PutInt (IniText handle, const char sectionName[],
 
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName))
     {
-        (void)integerValue;
+        char value[VALUE_MAX_LEN] = {0};
 
-        status = -1; // TODO
+        snprintf (value, sizeof (value), "%d", integerValue);
+
+        if (!RecordWriteSectionTagValue (handle, sectionName, tagName, value))
+        {
+            status = -1; // TODO
+        }
     }
     else
     {
@@ -105,9 +116,14 @@ int Ini_PutUInt (IniText handle, const char sectionName[],
 
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName))
     {
-        (void)unsignedIntegerValue;
+        char value[VALUE_MAX_LEN] = {0};
 
-        status = -1; // TODO
+        snprintf (value, sizeof(value), "%u", unsignedIntegerValue);
+
+        if (!RecordWriteSectionTagValue (handle, sectionName, tagName, value))
+        {
+            status = -1; // TODO
+        }
     }
     else
     {
@@ -125,10 +141,15 @@ int Ini_PutDouble (IniText handle, const char sectionName[],
 
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName))
     {
-        (void)doubleValue;
+        char value[VALUE_MAX_LEN] = {0};
 
-        status = -1; // TODO
-   }
+        snprintf (value, sizeof(value), "%f", doubleValue);
+
+        if (!RecordWriteSectionTagValue (handle, sectionName, tagName, value))
+        {
+            status = -1; // TODO
+        }
+    }
     else
     {
         status = NULL_POINTER_PASSED;
@@ -145,7 +166,12 @@ int Ini_PutBoolean (IniText handle, const char sectionName[],
 
     if ((NULL != handle) && (NULL != sectionName) && (NULL != tagName))
     {
-        (void)booleanValue;
+        char *value = (booleanValue == 0) ? "False" : "True";
+
+        if (!RecordWriteSectionTagValue (handle, sectionName, tagName, value))
+        {
+            status = -1; // TODO
+        }
 
         status = -1; // TODO
     }
