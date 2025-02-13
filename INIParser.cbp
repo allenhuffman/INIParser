@@ -43,32 +43,50 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="INI.h" />
+		<Unit filename="INIFileParser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="INIFileParser.h" />
 		<Unit filename="INIParser.c">
 			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParser.h" />
 		<Unit filename="INIParserGettingValuesFromTags.c">
 			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserGettingValuesFromTags.h" />
 		<Unit filename="INIParserInformational.c">
 			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserInformational.h" />
 		<Unit filename="INIParserManagement.c">
 			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserManagement.h" />
 		<Unit filename="INIParserPuttingTagValuePairs.c">
 			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserPuttingTagValuePairs.h" />
 		<Unit filename="INIParserRemovingSectionsAndItems.c">
 			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="INIParserRemovingSectionsAndItems.h" />
 		<Unit filename="INIRecords.c">
 			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="INIRecords.h" />
 		<Unit filename="MyMalloc.c">
@@ -79,6 +97,8 @@
 		<Unit filename="Sample.ini" />
 		<Unit filename="Utilities.c">
 			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="Utilities.h" />
 		<Unit filename="main.c">

@@ -56,6 +56,7 @@ int main (int argc, char **argv)
 
     if (NULL != handle)
     {
+        RecordWriteSectionTagValue (handle, "http", "port", "4242");
         RecordShowAll (handle);
     }
 

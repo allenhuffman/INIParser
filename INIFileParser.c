@@ -36,6 +36,8 @@
 /*--------------------------------------------------------------------------*/
 // Private Prototypes
 /*--------------------------------------------------------------------------*/
+static bool FindFirstAndLastNonWhitespace (const char *line, unsigned int *startPos, unsigned int *endPos, bool removeComments);
+
 static bool TrimString (const char *line, char *newLine, size_t newLineSize, bool removeComments);
 
 static bool ParseSection (const char *line, char *section, size_t sectionSize);
@@ -72,9 +74,10 @@ bool FileToRecords (FILE *fp, RecordHandle *handle)
 {
     bool status = false;
     char line[256] = {0};
-    char tempLine[256] = {0};
     char tag[80] = {0};
     char value[80] = {0};
+    unsigned int startPos = 0;
+    unsigned int endPos = 0;
 
     if (NULL != fp)
     {
@@ -82,27 +85,35 @@ bool FileToRecords (FILE *fp, RecordHandle *handle)
         {
             if (NULL != fgets (line, sizeof(line), fp))
             {
-                TrimString (line, tempLine, sizeof(tempLine), false);
+                //TrimString (line, tempLine, sizeof(tempLine), false);
+                if (FindFirstAndLastNonWhitespace (line, &startPos, &endPos, false))
+                {
+                    line[endPos + 1] = '\0';
 
-                if (';' == tempLine[0])
-                {
-                    RecordWriteComment (handle, tempLine+1); // Skip semicolon
-                }
-                else if ('[' == tempLine[0])
-                {
-                    char section[80] = {0};
-                    if (true == ParseSection (tempLine, section, sizeof(section)))
+                    if (';' == line[startPos])
                     {
-                        RecordWriteSection (handle, section);
+                        RecordWriteComment (handle, &line[startPos+1]); // Skip semicolon
                     }
-                }
-                else if (true == ParseTagValue (tempLine, tag, sizeof(tag), value, sizeof(value)))
-                {
-                    RecordWriteTagValue (handle, tag, value);
-                }
-                else
-                {
-                    RecordWriteUnknown (handle, tempLine);
+                    else if ('[' == line[0])
+                    {
+                        char section[80] = {0};
+                        if (true == ParseSection (&line[startPos], section, sizeof(section)))
+                        {
+                            RecordWriteSection (handle, section);
+                        }
+                    }
+                    else if (true == ParseTagValue (&line[startPos], tag, sizeof(tag), value, sizeof(value)))
+                    {
+                        RecordWriteTagValue (handle, tag, value);
+                    }
+                    else
+                    {
+                        if (('\n' == line[0]) || ('\r' == line[0]))
+                        {
+                            line[0] = '\0';
+                        }
+                        RecordWriteUnknown (handle, line);
+                    }
                 }
             }
         }
@@ -114,16 +125,53 @@ bool FileToRecords (FILE *fp, RecordHandle *handle)
 
 bool CloseINI (RecordHandle *handle)
 {
-    bool status = false;
-
-    (void)handle; // Unused for now.
-
-    return status;
+    return RecordTerm (handle);
 }
 
 /*--------------------------------------------------------------------------*/
 // Static Private Functions
 /*--------------------------------------------------------------------------*/
+static bool FindFirstAndLastNonWhitespace (const char *line, unsigned int *startPos, unsigned int *endPos, bool removeComments)
+{
+    bool status = false;
+
+    if ((NULL != line) && (NULL != startPos) && (0 != endPos))
+    {
+        size_t len = strlen (line);
+        unsigned int start = 0;
+        unsigned int end = len - 1;
+
+        if (true == removeComments)
+        {
+            char *semiPtr = strchr (line, ';');
+
+            if (NULL != semiPtr)
+            {
+                end = semiPtr - line - 1;
+            }
+        }
+
+        // Find first non-whitespace character
+        while ((start < len) && (isspace((unsigned char)line[start])))
+        {
+            start++;
+        }
+
+        // Find last non-whitespace character
+        while ((end > start) && (isspace((unsigned char)line[end])))
+        {
+            end--;
+        }
+
+        *startPos = start;
+        *endPos = end;
+
+        status = true;
+    }
+
+    return status;
+}
+
 static bool TrimString (const char *line, char *newLine, size_t newLineSize, bool removeComments)
 {
     bool status = false;
@@ -168,21 +216,18 @@ static bool TrimString (const char *line, char *newLine, size_t newLineSize, boo
 static bool ParseSection (const char *line, char *section, size_t sectionSize)
 {
     bool status = false;
-    char newLine[80] = {0};
+    unsigned int startPos = 0;
+    unsigned int endPos = 0;
 
     if ((NULL != line) && (NULL != section) && (0 != sectionSize))
     {
-        if (true == TrimString (line, newLine, sizeof(newLine), true))
+        //if (true == TrimString (line, trimmedLine, sizeof(trimmedLine), true))
+        if (true == FindFirstAndLastNonWhitespace (line, &startPos, &endPos, true))
         {
-            size_t len = strlen (newLine);
-
-            if (('[' == newLine[0]) && (']' == newLine[len-1]))
+            if (('[' == line[startPos]) && (']' == line[endPos]))
             {
-                char tempLine[80] = {0};
-
-                memcpy (tempLine, &newLine[1], len-2);
-
-                TrimString (tempLine, section, sectionSize, true);
+                memcpy (section, &line[startPos+1], endPos-startPos-1);
+                section[endPos - startPos] = '\0';
 
                 status = true;
             }
@@ -198,6 +243,8 @@ static bool ParseTagValue (const char *line, char *tag, size_t tagSize,
     bool status = false;
     char left[80] = {0};
     char right[80] = {0};
+    unsigned int startPos = 0;
+    unsigned int endPos = 0;
 
     if ((NULL != line) && (NULL != tag) && (0 != tagSize) &&
         (NULL != value) && (0 != valueSize))
@@ -208,12 +255,20 @@ static bool ParseTagValue (const char *line, char *tag, size_t tagSize,
         if (NULL != equalPtr)
         {
             strncpy (left, line, equalPtr-line);
-            TrimString (left, tag, tagSize, false);
-            tag[tagSize-1] = '\0';
+            //TrimString (left, tag, tagSize, false);
+            if (FindFirstAndLastNonWhitespace (left, &startPos, &endPos, false))
+            {
+                memcpy (tag, &line[startPos], endPos-startPos + 1);
+                tag[endPos + 1] = '\0';
+            }
 
             strncpy (right, equalPtr+1, sizeof(right));
-            TrimString (right, value, valueSize, true);
-            value[tagSize-1] = '\0';
+            //TrimString (right, value, valueSize, true);
+            if (FindFirstAndLastNonWhitespace (left, &startPos, &endPos, false))
+            {
+                memcpy (value, &line[startPos], endPos-startPos + 1);
+                value[endPos + 1] = '\0';
+            }
 
             status = true;
         }
