@@ -109,3 +109,13 @@
 	<string.h>
 	"INIRecords.h"
 
+1739463276 source:e:\allen c. huffmans drive\github\iniparser\errnotocvistatus.c
+	<errno.h>
+	"ErrnoToCVIStatus.h"
+
+1739463284 e:\allen c. huffmans drive\github\iniparser\errnotocvistatus.h
+	<stddef.h>
+
+1739463284 source:e:\allen c. huffmans drive\github\iniparser\errnotocvistatus.h
+	<stddef.h>
+

@@ -6,12 +6,11 @@
 #include <stdlib.h> // for EXIT_SUCCESS
 
 // This project's header
+#include "INIParser.h"
 
 // This file's header
 
 // Other headers
-#include "INI.h"
-#include "INIFileParser.h"
 #include "MyMalloc.h"
 
 /*--------------------------------------------------------------------------*/
@@ -50,106 +49,44 @@ int main (int argc, char **argv)
     (void)argc; // Not used.
     (void)argv; // Not used.
 
-    printf ("Before - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+    IniText iniTxt;
+    int status = 0; // INI Status
 
-#ifdef REAL_TEST
-    RecordHandle *handle = LoadINI ("Sample.ini");
+    printf ("Before Ini_New() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
 
-    if (NULL != handle)
+    iniTxt = Ini_New (false); // No automatic sorting.
+
+    if (NULL == iniTxt)
     {
-        RecordWriteSectionTagValue (handle, "http", "port", "4242");
-        RecordShowAll (handle);
-    }
-
-    CloseINI (handle);
-#endif
-
-#ifdef MANUAL_TEST
-    RecordHandle *handle = RecordInit ();
-
-    if (NULL != handle)
-    {
-        // Create a simple .ini file with comments
-        RecordWriteComment (handle, "------------------------------------------");
-        RecordWriteComment (handle, " INI Parser Test on "__DATE__" "__TIME__);
-        RecordWriteComment (handle, "------------------------------------------");
-
-        RecordWriteUnknown (handle, ""); // Add a blank line.
-
-        RecordWriteComment (handle, "This is the manually-made section.");
-        // Manually write a [Section]
-        RecordWriteSection (handle, "ManualSection");
-        // Manually write a Tag=Value
-        RecordWriteTagValue (handle, "ManualTag", "ManualValue");
-
-        RecordWriteUnknown (handle, ""); // Add a blank line.
-
-        RecordWriteComment (handle, "This is the first section.");
-        // Manually write a [Section]
-        RecordWriteSection (handle, "FirstSection");
-        // Add tag to ths existing [Section]:
-        RecordWriteSectionTagValue (handle, "FirstSection", "FirstTag", "FirstValue");
-
-        RecordWriteUnknown (handle, ""); // Add a blank line.
-
-        RecordWriteComment (handle, "This is the second section.");
-
-        // Add a new [Section] with a Tag=Value
-        RecordWriteSectionTagValue (handle, "SecondSection", "SecondTag", "SecondValue");
-
-        RecordWriteUnknown (handle, ""); // Add a blank line.
-
-        // Add to existing entries...
-        RecordWriteSectionTagValue (handle, "FirstSection", "FirstTag2", "FirstValue2");
-        RecordWriteSectionTagValue (handle, "SecondSection", "SecondTag2", "SecondValue2");
-
-        // Update existing entries:
-        RecordWriteSectionTagValue (handle, "FirstSection", "FirstTag", "ReplacementFirstValue");
-        RecordWriteSectionTagValue (handle, "SecondSection", "SecondTag", "ReplacementSecondValue");
-
-        RecordWriteComment (handle, "------------------------------------------");
-        RecordWriteComment (handle, " End of file.");
-        RecordWriteComment (handle, "------------------------------------------");
-
-        RecordShowAll (handle);
-
-        printf ("After Allocation - Allocated: %u\n", (unsigned int)GetSizeAllocated());
-
-        // Now let's try to read some...
-        ReadAndShow (handle, "ManualSection", "ManualTag");
-
-        ReadAndShow (handle, "FirstSection", "FirstTag");
-        ReadAndShow (handle, "FirstSection", "FirstTag2");
-
-        ReadAndShow (handle, "SecondSection", "SecondTag");
-        ReadAndShow (handle, "SecondSection", "SecondTag2");
-
-
-        RecordTerm (handle);
-    }
-#endif // MANUAL_TEST
-
-    printf ("After Free - Allocated: %u\n", (unsigned int)GetSizeAllocated());
-
-    return EXIT_SUCCESS;
-}
-
-/*--------------------------------------------------------------------------*/
-void ReadAndShow (RecordHandle *handle, const char *section, const char *tag)
-{
-    bool status = false;
-    char buffer[80] = {0};
-
-    status = RecordReadTagValue (handle, section, tag, &buffer[0], sizeof(buffer));
-
-    if (true == status)
-    {
-        printf ("%s=%s\n", tag, buffer);
+        fprintf (stderr, "Unable to Ini_New()\n");
     }
     else
     {
-        printf ("%s= NOT found.\n", tag);
+        status = Ini_ReadFromFile (iniTxt, "Sample2.ini");
+
+        if (status < 0) // 0 means success here.
+        {
+            fprintf (stderr, "Unable to read from file: %d\n", status);
+        }
+        else
+        {
+            printf ("After Ini_ReadFromFile() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+
+            RecordShowAll (iniTxt);
+
+            printf ("Adding a new key to Exciter...\n");
+
+            RecordWriteSectionTagValue (iniTxt, "Exciter", "FirmwareUpdate","Work");
+
+            RecordShowAll (iniTxt);
+        }
+
+        Ini_Dispose (iniTxt);
+
+        printf ("After Ini_Dispose() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
     }
+
+    return EXIT_SUCCESS;
 }
 
 /*--------------------------------------------------------------------------*/

@@ -12,7 +12,6 @@
 
 // Other headers
 #include "ErrnoToCVIStatus.h"
-#include "INIRecords.h"
 
 /*--------------------------------------------------------------------------*/
 // Constants

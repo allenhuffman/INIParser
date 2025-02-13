@@ -11,7 +11,6 @@
 #include "INIParserRemovingSectionsAndItems.h"
 
 // Other headers
-#include "INIRecords.h"
 
 /*--------------------------------------------------------------------------*/
 // Constants

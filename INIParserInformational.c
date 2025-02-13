@@ -11,7 +11,6 @@
 #include "INIParserInformational.h"
 
 // Other headers
-#include "INIRecords.h"
 
 /*--------------------------------------------------------------------------*/
 // Constants

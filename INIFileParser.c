@@ -36,17 +36,116 @@
 /*--------------------------------------------------------------------------*/
 // Private Prototypes
 /*--------------------------------------------------------------------------*/
-static bool FindFirstAndLastNonWhitespace (const char *line, unsigned int *startPos, unsigned int *endPos, bool removeComments);
-
-static bool TrimString (const char *line, char *newLine, size_t newLineSize, bool removeComments);
-
-static bool ParseSection (const char *line, char *section, size_t sectionSize);
-
-static bool ParseTagValue (const char *line, char *tag, size_t tagSize, char *value, size_t valueSize);
 
 /*--------------------------------------------------------------------------*/
 // Public Functions
 /*--------------------------------------------------------------------------*/
+bool FindFirstAndLastNonWhitespace (const char *line, unsigned int *startPos, unsigned int *endPos, bool removeComments)
+{
+    bool status = false;
+
+    if ((NULL != line) && (NULL != startPos) && (0 != endPos))
+    {
+        size_t len = strlen (line);
+        unsigned int start = 0;
+        unsigned int end = len - 1;
+
+        if (true == removeComments)
+        {
+            char *semiPtr = strchr (line, ';');
+
+            if (NULL != semiPtr)
+            {
+                end = semiPtr - line - 1;
+            }
+        }
+
+        // Find first non-whitespace character
+        while ((start < len) && (isspace((unsigned char)line[start])))
+        {
+            start++;
+        }
+
+        // Find last non-whitespace character
+        while ((end > start) && (isspace((unsigned char)line[end])))
+        {
+            end--;
+        }
+
+        *startPos = start;
+        *endPos = end;
+
+        status = true;
+    }
+
+    return status;
+}
+
+bool ParseSection (const char *line, char *section, size_t sectionSize)
+{
+    bool status = false;
+    unsigned int startPos = 0;
+    unsigned int endPos = 0;
+
+    if ((NULL != line) && (NULL != section) && (0 != sectionSize))
+    {
+        //if (true == TrimString (line, trimmedLine, sizeof(trimmedLine), true))
+        if (true == FindFirstAndLastNonWhitespace (line, &startPos, &endPos, true))
+        {
+            if (('[' == line[startPos]) && (']' == line[endPos]))
+            {
+                memcpy (section, &line[startPos+1], endPos-startPos-1);
+                section[endPos - startPos] = '\0';
+
+                status = true;
+            }
+        }
+    }
+
+    return status;
+}
+
+bool ParseTagValue (const char *line, char *tag, size_t tagSize,
+                           char *value, size_t valueSize)
+{
+    bool status = false;
+    char left[80] = {0};
+    char right[80] = {0};
+    unsigned int startPos = 0;
+    unsigned int endPos = 0;
+
+    if ((NULL != line) && (NULL != tag) && (0 != tagSize) &&
+        (NULL != value) && (0 != valueSize))
+    {
+        // Split the line at the '='
+        char *equalPtr = strchr (line, '=');
+
+        if (NULL != equalPtr)
+        {
+            strncpy (left, line, equalPtr-line);
+            //TrimString (left, tag, tagSize, false);
+            if (FindFirstAndLastNonWhitespace (left, &startPos, &endPos, false))
+            {
+                memcpy (tag, &line[startPos], endPos-startPos + 1);
+                tag[endPos + 1] = '\0';
+            }
+
+            strncpy (right, equalPtr+1, sizeof(right));
+            //TrimString (right, value, valueSize, true);
+            if (FindFirstAndLastNonWhitespace (left, &startPos, &endPos, false))
+            {
+                memcpy (value, &line[startPos], endPos-startPos + 1);
+                value[endPos + 1] = '\0';
+            }
+
+            status = true;
+        }
+    }
+
+    return status;
+}
+
+#if defined(INCLUDE_INI_LOADER)
 RecordHandle LoadINI (const char *filename)
 {
     RecordHandle *handle = NULL;
@@ -127,154 +226,10 @@ bool CloseINI (RecordHandle *handle)
 {
     return RecordTerm (handle);
 }
+#endif // INCLUDE_INI_LOADER
 
 /*--------------------------------------------------------------------------*/
 // Static Private Functions
 /*--------------------------------------------------------------------------*/
-static bool FindFirstAndLastNonWhitespace (const char *line, unsigned int *startPos, unsigned int *endPos, bool removeComments)
-{
-    bool status = false;
-
-    if ((NULL != line) && (NULL != startPos) && (0 != endPos))
-    {
-        size_t len = strlen (line);
-        unsigned int start = 0;
-        unsigned int end = len - 1;
-
-        if (true == removeComments)
-        {
-            char *semiPtr = strchr (line, ';');
-
-            if (NULL != semiPtr)
-            {
-                end = semiPtr - line - 1;
-            }
-        }
-
-        // Find first non-whitespace character
-        while ((start < len) && (isspace((unsigned char)line[start])))
-        {
-            start++;
-        }
-
-        // Find last non-whitespace character
-        while ((end > start) && (isspace((unsigned char)line[end])))
-        {
-            end--;
-        }
-
-        *startPos = start;
-        *endPos = end;
-
-        status = true;
-    }
-
-    return status;
-}
-
-static bool TrimString (const char *line, char *newLine, size_t newLineSize, bool removeComments)
-{
-    bool status = false;
-
-    if ((NULL != line) && (NULL != newLine) && (0 != newLineSize))
-    {
-        size_t len = strlen (line);
-        unsigned int startPos = 0;
-        unsigned int endPos = len;
-
-        if (true == removeComments)
-        {
-            char *semiPtr = strchr (line, ';');
-
-            if (NULL != semiPtr)
-            {
-                endPos = semiPtr - line - 1;
-            }
-        }
-
-        // Find first non-whitespace character
-        while ((startPos < len) && (isspace((unsigned char)line[startPos])))
-        {
-            startPos++;
-        }
-
-        // Find last non-whitespace character
-        while ((endPos > startPos) && (isspace((unsigned char)line[endPos - 1])))
-        {
-            endPos--;
-        }
-
-        strncpy (newLine, &line[startPos], endPos-startPos);
-        newLine[endPos-startPos] = '\0';
-
-        status = true;
-    }
-
-    return status;
-}
-
-static bool ParseSection (const char *line, char *section, size_t sectionSize)
-{
-    bool status = false;
-    unsigned int startPos = 0;
-    unsigned int endPos = 0;
-
-    if ((NULL != line) && (NULL != section) && (0 != sectionSize))
-    {
-        //if (true == TrimString (line, trimmedLine, sizeof(trimmedLine), true))
-        if (true == FindFirstAndLastNonWhitespace (line, &startPos, &endPos, true))
-        {
-            if (('[' == line[startPos]) && (']' == line[endPos]))
-            {
-                memcpy (section, &line[startPos+1], endPos-startPos-1);
-                section[endPos - startPos] = '\0';
-
-                status = true;
-            }
-        }
-    }
-
-    return status;
-}
-
-static bool ParseTagValue (const char *line, char *tag, size_t tagSize,
-                           char *value, size_t valueSize)
-{
-    bool status = false;
-    char left[80] = {0};
-    char right[80] = {0};
-    unsigned int startPos = 0;
-    unsigned int endPos = 0;
-
-    if ((NULL != line) && (NULL != tag) && (0 != tagSize) &&
-        (NULL != value) && (0 != valueSize))
-    {
-        // Split the line at the '='
-        char *equalPtr = strchr (line, '=');
-
-        if (NULL != equalPtr)
-        {
-            strncpy (left, line, equalPtr-line);
-            //TrimString (left, tag, tagSize, false);
-            if (FindFirstAndLastNonWhitespace (left, &startPos, &endPos, false))
-            {
-                memcpy (tag, &line[startPos], endPos-startPos + 1);
-                tag[endPos + 1] = '\0';
-            }
-
-            strncpy (right, equalPtr+1, sizeof(right));
-            //TrimString (right, value, valueSize, true);
-            if (FindFirstAndLastNonWhitespace (left, &startPos, &endPos, false))
-            {
-                memcpy (value, &line[startPos], endPos-startPos + 1);
-                value[endPos + 1] = '\0';
-            }
-
-            status = true;
-        }
-    }
-
-    return status;
-}
 
 // End of Template.c
