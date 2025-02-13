@@ -36,7 +36,7 @@
 /*--------------------------------------------------------------------------*/
 // Private Prototypes
 /*--------------------------------------------------------------------------*/
-static bool TrimString (const char *line, char *newLine, size_t newLineSize);
+static bool TrimString (const char *line, char *newLine, size_t newLineSize, bool removeComments);
 
 static bool ParseSection (const char *line, char *section, size_t sectionSize);
 
@@ -82,7 +82,7 @@ bool FileToRecords (FILE *fp, RecordHandle *handle)
         {
             if (NULL != fgets (line, sizeof(line), fp))
             {
-                TrimString (line, tempLine, sizeof(tempLine));
+                TrimString (line, tempLine, sizeof(tempLine), false);
 
                 if (';' == tempLine[0])
                 {
@@ -124,7 +124,7 @@ bool CloseINI (RecordHandle *handle)
 /*--------------------------------------------------------------------------*/
 // Static Private Functions
 /*--------------------------------------------------------------------------*/
-static bool TrimString (const char *line, char *newLine, size_t newLineSize)
+static bool TrimString (const char *line, char *newLine, size_t newLineSize, bool removeComments)
 {
     bool status = false;
 
@@ -133,6 +133,16 @@ static bool TrimString (const char *line, char *newLine, size_t newLineSize)
         size_t len = strlen (line);
         unsigned int startPos = 0;
         unsigned int endPos = len;
+
+        if (true == removeComments)
+        {
+            char *semiPtr = strchr (line, ';');
+
+            if (NULL != semiPtr)
+            {
+                endPos = semiPtr - line - 1;
+            }
+        }
 
         // Find first non-whitespace character
         while ((startPos < len) && (isspace((unsigned char)line[startPos])))
@@ -162,7 +172,7 @@ static bool ParseSection (const char *line, char *section, size_t sectionSize)
 
     if ((NULL != line) && (NULL != section) && (0 != sectionSize))
     {
-        if (true == TrimString (line, newLine, sizeof(newLine)))
+        if (true == TrimString (line, newLine, sizeof(newLine), true))
         {
             size_t len = strlen (newLine);
 
@@ -172,7 +182,7 @@ static bool ParseSection (const char *line, char *section, size_t sectionSize)
 
                 memcpy (tempLine, &newLine[1], len-2);
 
-                TrimString (tempLine, section, sectionSize);
+                TrimString (tempLine, section, sectionSize, true);
 
                 status = true;
             }
@@ -198,11 +208,11 @@ static bool ParseTagValue (const char *line, char *tag, size_t tagSize,
         if (NULL != equalPtr)
         {
             strncpy (left, line, equalPtr-line);
-            TrimString (left, tag, tagSize);
+            TrimString (left, tag, tagSize, false);
             tag[tagSize-1] = '\0';
 
             strncpy (right, equalPtr+1, sizeof(right));
-            TrimString (right, value, valueSize);
+            TrimString (right, value, valueSize, true);
             value[tagSize-1] = '\0';
 
             status = true;
