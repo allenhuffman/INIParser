@@ -36,6 +36,10 @@
 /*--------------------------------------------------------------------------*/
 static void ShowResult (const char line[], const char item[], bool status);
 
+static void ShowTwoResults (const char line[], const char item1[],
+                            const char item2[], bool status);
+
+
 /*--------------------------------------------------------------------------*/
 // Public Functions
 /*--------------------------------------------------------------------------*/
@@ -80,6 +84,7 @@ LineTypeEnum GetLineType (const char line[])
 }
 
 /*--------------------------------------------------------------------------*/
+/*
 bool GetCommentFromLine (const char line[], char *commentPtr,
                          size_t commentSize)
 {
@@ -116,8 +121,10 @@ bool GetCommentFromLine (const char line[], char *commentPtr,
 
     return status;
 }
+*/
 
 /*--------------------------------------------------------------------------*/
+/*
 bool GetSectionFromLine (const char line[], char *sectionPtr,
                          size_t sectionSize)
 {
@@ -195,8 +202,10 @@ bool GetSectionFromLine (const char line[], char *sectionPtr,
 
     return status;
 }
+*/
 
 /*--------------------------------------------------------------------------*/
+/*
 bool GetTagFromLine (const char line[], char *tagPtr, size_t tagSize)
 {
     bool status = false;
@@ -241,8 +250,10 @@ bool GetTagFromLine (const char line[], char *tagPtr, size_t tagSize)
 
     return status;
 }
+*/
 
 /*--------------------------------------------------------------------------*/
+/*
 bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize)
 {
     bool status = false;
@@ -305,6 +316,7 @@ bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize)
 
     return status;
 }
+*/
 
 /*--------------------------------------------------------------------------*/
 const char *LineTypeToStringPtr (LineTypeEnum lineType)
@@ -455,25 +467,57 @@ bool IsLineEmpty (const char line[])
 // character.
 bool IsLineAComment (const char line[])
 {
+    return GetCommentFromLine (line, NULL, 0);
+}
+
+bool GetCommentFromLine (const char line[], char *commentPtr, size_t commentSize)
+{
     bool status = false;
 
     if (NULL != line)
     {
         size_t lineLen = strlen (line);
-        size_t pos = 0;
+        size_t startPos = 0;
 
         // Skip any whitespace, looking for ";"
-        while ((pos < lineLen) && iswspace (line[pos]))
+        while ((startPos < lineLen) && iswspace (line[startPos]))
         {
-            pos++;
+            startPos++;
         }
 
         // Here, we found our first non-whitespace character. If it is
         // a semicolon, this is a valid comment line.
-        if (';' == line[pos])
+        if (';' == line[startPos])
         {
+            // Skip the '['
+            startPos++;
+
+            // TODO: Do we want to remove leading whitespace?
+            // Maybe not. Someone may be doing comments
+            //       Like This
+            //       And Want Them
+            //       Left Alone.
+
             status = true;
+
+            // Copy the comment back, if requested.
+            if ((NULL != commentPtr) && (0 != commentSize))
+            {
+                size_t copyLen = (lineLen - startPos);
+
+                if (copyLen > commentSize)
+                {
+                    copyLen = commentSize;
+                }
+                strncpy (commentPtr, &line[startPos], copyLen);
+                // strncpy() does not add the '\0' if it copies to max.
+                commentPtr[commentSize] = '\0';
+            }
         }
+
+#if DEBUG_INIPARSER > 0
+        ShowResult (line, commentPtr, status);
+#endif // DEBUG_INIPARSER
     }
 
     return status;
@@ -485,53 +529,87 @@ bool IsLineAComment (const char line[])
 // after it other than a ";" comment.
 bool IsLineASection (const char line[])
 {
+    return GetSectionFromLine (line, NULL, 0);
+}
+
+bool GetSectionFromLine (const char line[], char *sectionPtr,
+                         size_t sectionSize)
+{
     bool status = false;
 
     if (NULL != line)
     {
         size_t lineLen = strlen (line);
-        size_t pos = 0;
+        size_t startPos = 0;
 
         // Step 1: Find the first "[".
 
         // Skip any whitespace.
-        while ((pos < lineLen) && iswspace (line[pos]))
+        while ((startPos < lineLen) && iswspace (line[startPos]))
         {
-            pos++;
+            startPos++;
         }
 
         // Here, we found our first non-whitespace character. If it is
         // a "[", this is a valid comment line.
-        if ('[' == line[pos])
+        if ('[' == line[startPos])
         {
-            // Step 2: Fine some text.
+            // Skip the '['
+            startPos++;
+
+            // Step 2: Find some text.
 
             // Now we need to find at least one non-whitespace character.
             // Skip any whitespace.
-            while ((pos < lineLen) && iswspace (line[pos]))
+            while ((startPos < lineLen) && iswspace (line[startPos]))
             {
-                pos++;
+                startPos++;
             }
+
             // Here, we found another non-whitespace character. If it
             // is NOT "]", we can continue;
 
-            if (']' != line[pos])
+            if (']' != line[startPos])
             {
                 // Step 3: Find the closing "]".
+                size_t endPos = startPos;
 
                 // Not we need to scan forward looking for the "]".
-                while (pos < lineLen)
+                while ((endPos < lineLen) && (']' != line[endPos]))
                 {
-                    if (']' == line[pos])
-                    {
-                        status = true;
-                        break;
-                    }
+                    endPos++;
+                }
 
-                    pos++;
+                // Back up before the ']'
+                endPos--;
+
+                // Now back up skipping any whitespace.
+                while ((endPos > startPos) && (iswspace (line[endPos])))
+                {
+                    endPos--;
+                }
+
+                status = true;
+
+                // Copy the comment back, if requested.
+                if ((NULL != sectionPtr) && (0 != sectionSize))
+                {
+                    size_t copyLen = (endPos - startPos) + 1;
+
+                    if (copyLen > sectionSize)
+                    {
+                        copyLen = sectionSize;
+                    }
+                    strncpy (sectionPtr, &line[startPos], copyLen);
+                    // strncpy() does not add the '\0' if it copies to max.
+                    sectionPtr[sectionSize] = '\0';
                 }
             } // end of if (']'
         } // end of if ('['
+
+#if DEBUG_INIPARSER > 0
+        ShowResult (line, sectionPtr, status);
+#endif // DEBUG_INIPARSER
     } // end of if (NULL
 
     return status;
@@ -543,6 +621,12 @@ bool IsLineASection (const char line[])
 // character(s), then an equal, then printable character(s).
 bool IsLineATagValue (const char line[])
 {
+    return GetTagValueFromLine (line, NULL, 0, NULL, 0);
+}
+
+bool GetTagValueFromLine (const char line[], char *tagPtr, size_t tagSize,
+                          char *valuePtr, size_t valueSize)
+{
     bool status = false;
 
     if (NULL != line)
@@ -553,34 +637,98 @@ bool IsLineATagValue (const char line[])
         if (NULL != equalPtr)
         {
             size_t lineLen = strlen (line);
-            size_t pos = 0;
-            size_t endPos = (equalPtr - &line[0]);
+            size_t equalPos = (equalPtr - &line[0]);
+            size_t tagStartPos = 0;
+            size_t tagEndPos = equalPos;
 
             // Skip any whitespace.
-            while ((pos < endPos) && iswspace (line[pos]))
+            while ((tagStartPos < tagEndPos) && iswspace (line[tagStartPos]))
             {
-                pos++;
+                tagStartPos++;
             }
 
-            if (pos < endPos)
+            if (tagStartPos < tagEndPos)
             {
-                // Found some before the '='. Good.
+                // Backup one before '='
+                tagEndPos--;
 
-                // Now look for some after the '='.
-
-                pos = endPos + 1;
-
-                while (pos < lineLen)
+                // Found something before the '='. Start of Tag.
+                // Backup from '=' skipping white space.
+                while ((tagEndPos > tagStartPos) &&
+                       iswspace (line[tagEndPos]))
                 {
-                    if (isprint (line[pos]))
+                    printf (".");
+                    tagEndPos--;
+                }
+
+                size_t valueStartPos = equalPos + 1;
+                size_t valueEndPos = lineLen;
+
+                // Skip whitespace after the '='.
+                while ((valueStartPos < valueEndPos) && iswspace (line[valueStartPos]))
+                {
+                    valueStartPos++;
+                }
+
+                if (valueStartPos < valueEndPos)
+                {
+                    // Found something after the '='. Start of Value.
+
+                    valueEndPos = valueStartPos + 1;
+
+                    // Scan forward looking for ';' or end of line.
+                    while ((valueEndPos < lineLen) && (';' != line[valueEndPos]))
                     {
-                        // Found non-whitespace.
+                        valueEndPos++;
+                    }
+
+                    // Backup from end skipping white space.
+                    while ((valueEndPos > valueStartPos) &&
+                           iswspace (line[valueEndPos]))
+                    {
+                        valueEndPos--;
+                    }
+
+                    if (valueEndPos > valueStartPos)
+                    {
+                        // Good!
                         status = true;
-                        break;
+
+                        if ((NULL != tagPtr) && (0 != tagSize))
+                        {
+                            size_t copyLen = tagEndPos - tagStartPos;
+
+                            if (copyLen > tagSize)
+                            {
+                                copyLen = tagSize;
+                            }
+
+                            strncpy (tagPtr, &line[tagStartPos], copyLen);
+                            // strncpy() does not add the '\0' if it copies to max.
+                            tagPtr[copyLen] = '\0';
+                        }
+
+                        if ((NULL != valuePtr) && (0 != valueSize))
+                        {
+                            size_t copyLen = valueEndPos - valueStartPos;
+
+                            if (copyLen > valueSize)
+                            {
+                                copyLen = valueSize;
+                            }
+
+                            strncpy (valuePtr, &line[valueStartPos], copyLen);
+                            // strncpy() does not add the '\0' if it copies to max.
+                            valuePtr[copyLen] = '\0';
+                        }
                     }
                 }
-            } // end of if (pos < endPos)
+            }
         } // end of if (NULL != equalPtr)
+
+#if DEBUG_INIPARSER > 0
+        ShowTwoResults (line, tagPtr, valuePtr, status);
+#endif // DEBUG_INIPARSER
     } // end of if (NULL != line)
 
     return status;
@@ -591,9 +739,41 @@ bool IsLineATagValue (const char line[])
 /*--------------------------------------------------------------------------*/
 static void ShowResult (const char line[], const char item[], bool status)
 {
-    printf ("'%s'%-*s'%s'\n", line,
-            (int)(40-strlen(line)-2), "",
-            (true == status) ? item : "false");
+    if (false == status)
+    {
+        printf ("'%s'%-*sFALSE\n", line, (int)(40-strlen(line)-2), "");
+    }
+    else
+    {
+        printf ("'%s'%-*s'%s'\n", line,
+                (int)(40-strlen(line)-2), "", item);
+    }
+}
+
+
+static void ShowTwoResults (const char line[], const char item1[],
+                            const char item2[], bool status)
+{
+    if (false == status)
+    {
+        printf ("'%s'%-*sFALSE\n", line, (int)(40-strlen(line)-2), "");
+    }
+    else
+    {
+        printf ("'%s'%-*s", line, (int)(40-strlen(line)-2), "");
+
+        if (NULL != item1)
+        {
+            printf ("Tag:'%s' ", item1);
+        }
+
+        if (NULL != item2)
+        {
+            printf ("Value:'%s'", item2);
+        }
+
+        printf ("\n");
+    }
 }
 
 // End of INIParser.c

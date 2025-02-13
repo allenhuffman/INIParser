@@ -39,6 +39,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="ErrnoToCVIStatus.h" />
+		<Unit filename="INI.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="INI.h" />
 		<Unit filename="INIParser.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -46,9 +50,7 @@
 		<Unit filename="INIParserGettingValuesFromTags.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="INIParserGettingValuesFromTags.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
+		<Unit filename="INIParserGettingValuesFromTags.h" />
 		<Unit filename="INIParserInformational.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -69,6 +71,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="INIRecords.h" />
+		<Unit filename="MyMalloc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="MyMalloc.h" />
 		<Unit filename="README.md" />
 		<Unit filename="Sample.ini" />
 		<Unit filename="Utilities.c">

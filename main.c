@@ -1,220 +1,152 @@
-#include <ctype.h>
+/*--------------------------------------------------------------------------*/
+// Includes
+/*--------------------------------------------------------------------------*/
+// Compiler headers
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdlib.h> // for EXIT_SUCCESS
 
-#include "ErrnoToCVIStatus.h"
-#include "INIParser.h"
-#include "Utilities.h"
+// This project's header
 
-#include "INIRecords.h" // for testing the records.
+// This file's header
 
-#define INI_FILENAME "Sample.ini"
+// Other headers
+#include "INI.h"
+#include "INIFileParser.h"
+#include "MyMalloc.h"
 
-void PrintHeader (const char *header)
+/*--------------------------------------------------------------------------*/
+// Constants
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Enums
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Typedefs
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Global Variables
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Static Variables
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Private Prototypes
+/*--------------------------------------------------------------------------*/
+void ReadAndShow (RecordHandle *handle, const char *section, const char *tag);
+
+
+/*--------------------------------------------------------------------------*/
+// Public Functions
+/*--------------------------------------------------------------------------*/
+int main (int argc, char **argv)
 {
-    printf ("\n"
-            "%s\n"
-            "-------------------------------------------------------------------------------\n",
-            header);
-}
+    (void)argc; // Not used.
+    (void)argv; // Not used.
 
-int main()
-{
-    // Test some of the calls:
-    char buffer[80] = {0};
+    printf ("Becfore - Allocated: %u\n", (unsigned int)GetSizeAllocated());
 
-    const char *testLines[] =
-    {
-        // Emtpy
-        "",
-        // Invalid
-        "Hello World!",
-        "=",
-        "=Value",
-        "Tag=",
-        // Comments
-        "; This is a comment",
-        ";This is also a comment",
-        // Sections
-        "[This is a section]",
-        "[ This is a section ]",
-        "[This is a section] ; Comment",
-        "[  This is a section  ] ; Comment",
-        // Key/Value
-        "Tag=Value",
-        "Tag = Value",
-        "Tag = Value ; Comment",
-        NULL
-    };
+    RecordHandle *handle = RecordInit ();
 
-    int idx = 0;
-
-    PrintHeader ("Line Types:");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        printf ("%2d) '%s'%-*s%s\n",
-                idx, testLines[idx],
-                (int)(40-strlen(testLines[idx])-2), "",
-                LineTypeToStringPtr (GetLineType (testLines[idx])));
-
-        idx++;
-    }
-
-    // Test Comment parser.
-    PrintHeader ("Comments:");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        memset (buffer, 0x0, sizeof(buffer));
-        printf ("%2d) ", idx);
-        GetCommentFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
-        idx++;
-    }
-
-    // Test Section parser
-    PrintHeader ("Sections:");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        printf ("%2d) ", idx);
-        GetSectionFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
-        idx++;
-    }
-
-    // Test Tag parser
-    PrintHeader ("Tags");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        printf ("%2d) ", idx);
-        GetTagFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
-        idx++;
-    }
-
-    // Test Key parser
-    PrintHeader ("Value");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        printf ("%2d) ", idx);
-        GetValueFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
-        idx++;
-    }
-
-    exit (0);
-#if 0
-    // Test the INIRecords.
-    bool status = false;
-
-    RecordHandle handle = RecordInit ();
+    handle = LoadINI ("Sample.ini");
 
     if (NULL != handle)
     {
-        // Write 10 lines...
-        for (int idx = 1; idx <= 10; idx++)
-        {
-            char line[80];
-            snprintf (line, sizeof(line), "This is line %d.", idx);
+        RecordShowAll (handle);
+    }
 
-            status = RecordWrite (handle, line);
+    CloseINI (handle);
+/*
+    if (NULL != handle)
+    {
+        // Create a simple .ini file with comments
+        RecordWriteComment (handle, "------------------------------------------");
+        RecordWriteComment (handle, " INI Parser Test on "__DATE__" "__TIME__);
+        RecordWriteComment (handle, "------------------------------------------");
 
-            if (false == status)
-            {
-                break;
-            }
-        } // end of for (int idx = 0
+        RecordWriteUnknown (handle, ""); // Add a blank line.
 
-        if (true == status)
-        {
-            RecordShowAll (handle);
-        }
+        RecordWriteComment (handle, "This is the manually-made section.");
+        // Manually write a [Section]
+        RecordWriteSection (handle, "ManualSection");
+        // Manually write a Tag=Value
+        RecordWriteTagValue (handle, "ManualTag", "ManualValue");
+
+        RecordWriteUnknown (handle, ""); // Add a blank line.
+
+        RecordWriteComment (handle, "This is the first section.");
+        // Manually write a [Section]
+        RecordWriteSection (handle, "FirstSection");
+        // Add tag to ths existing [Section]:
+        RecordWriteSectionTagValue (handle, "FirstSection", "FirstTag", "FirstValue");
+
+        RecordWriteUnknown (handle, ""); // Add a blank line.
+
+        RecordWriteComment (handle, "This is the second section.");
+
+        // Add a new [Section] with a Tag=Value
+        RecordWriteSectionTagValue (handle, "SecondSection", "SecondTag", "SecondValue");
+
+        RecordWriteUnknown (handle, ""); // Add a blank line.
+
+        // Add to existing entries...
+        RecordWriteSectionTagValue (handle, "FirstSection", "FirstTag2", "FirstValue2");
+        RecordWriteSectionTagValue (handle, "SecondSection", "SecondTag2", "SecondValue2");
+
+        // Update existing entries:
+        RecordWriteSectionTagValue (handle, "FirstSection", "FirstTag", "ReplacementFirstValue");
+        RecordWriteSectionTagValue (handle, "SecondSection", "SecondTag", "ReplacementSecondValue");
+
+        RecordWriteComment (handle, "------------------------------------------");
+        RecordWriteComment (handle, " End of file.");
+        RecordWriteComment (handle, "------------------------------------------");
+
+        RecordShowAll (handle);
+
+        printf ("After Allocation - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+
+        // Now let's try to read some...
+        ReadAndShow (handle, "ManualSection", "ManualTag");
+
+        ReadAndShow (handle, "FirstSection", "FirstTag");
+        ReadAndShow (handle, "FirstSection", "FirstTag2");
+
+        ReadAndShow (handle, "SecondSection", "SecondTag");
+        ReadAndShow (handle, "SecondSection", "SecondTag2");
+
 
         RecordTerm (handle);
-
-        printf ("Done.\n");
-
-    } // end of if (NULL != handle)
-
-#endif
-
-    // TEST CODE
-    IniText iniText;
-
-    iniText = Ini_New (0); // No automatic sorting.
-
-    if (0 != iniText)
-    {
-        int             status = 0;
-        unsigned int    httpPort = 0;
-        char            httpUsername[80] = {0};
-
-        unsigned int    httpsPort = 0;
-        char            httpsUsername[80] = {0};
-
-        unsigned int    ftpPort = 0;
-        char            ftpUsername[80] = {0};
-
-
-        status = Ini_ReadFromFile (iniText, INI_FILENAME);
-
-        // TESTING:
-        RecordShowAll (iniText);
-
-        /*------------------------------------------------------------------*/
-        // [http]
-        /*------------------------------------------------------------------*/
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetUInt (iniText, "http", "port", &httpPort);
-        }
-
-        if (0 == status)
-        {
-            status = Ini_GetStringIntoBuffer (iniText, "http", "username",
-                                              &httpUsername[0],
-                                              sizeof(httpUsername)-1);
-        }
-
-        /*------------------------------------------------------------------*/
-        // [https]
-        /*------------------------------------------------------------------*/
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetUInt (iniText, "https", "port", &httpsPort);
-        }
-
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetStringIntoBuffer (iniText, "https", "username",
-                                              &httpsUsername[0],
-                                              sizeof(httpsUsername)-1);
-        }
-
-        /*------------------------------------------------------------------*/
-        // [ftp]
-        /*------------------------------------------------------------------*/
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetUInt (iniText, "ftp", "port", &ftpPort);
-        }
-
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetStringIntoBuffer (iniText, "ftp", "username",
-                                              &ftpUsername[0],
-                                              sizeof(ftpUsername)-1);
-        }
-
-        printf ("HTTP  %-5u - %s\n", httpPort, httpUsername);
-        printf ("HTTPS %-5u - %s\n", httpPort, httpUsername);
-        printf ("FTP   %-5u - %s\n", httpPort, httpUsername);
-
-        Ini_Dispose (iniText);
     }
+*/
+    printf ("After Free - Allocated: %u\n", (unsigned int)GetSizeAllocated());
 
     return EXIT_SUCCESS;
 }
 
-// End of main.c
+/*--------------------------------------------------------------------------*/
+void ReadAndShow (RecordHandle *handle, const char *section, const char *tag)
+{
+    bool status = false;
+    char buffer[80] = {0};
+
+    status = RecordReadTagValue (handle, section, tag, &buffer[0], sizeof(buffer));
+
+    if (true == status)
+    {
+        printf ("%s=%s\n", tag, buffer);
+    }
+    else
+    {
+        printf ("%s= NOT found.\n", tag);
+    }
+}
+
+/*--------------------------------------------------------------------------*/
+// Private Functions
+/*--------------------------------------------------------------------------*/
+
+// End of Template.c

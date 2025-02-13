@@ -58,13 +58,11 @@ typedef enum
 
 LineTypeEnum GetLineType (const char line[]);
 
-bool GetCommentFromLine (const char line[], char *commentPtr, size_t commentSize);
 
-bool GetSectionFromLine (const char line[], char *sectionPtr, size_t sectionSize);
 
-bool GetTagFromLine (const char line[], char *tagPtr, size_t tagSize);
+//bool GetTagFromLine (const char line[], char *tagPtr, size_t tagSize);
 
-bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize);
+//bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize);
 
 const char *LineTypeToStringPtr (LineTypeEnum lineType);
 
@@ -75,10 +73,15 @@ bool RemoveSpacesAroundEqual (const char line[], char *newLinePtr, size_t newLin
 bool IsLineEmpty (const char line[]);
 
 bool IsLineAComment (const char line[]);
+bool GetCommentFromLine (const char line[], char *commentPtr, size_t commentSize);
 
 bool IsLineASection (const char line[]);
+bool GetSectionFromLine (const char line[], char *sectionPtr, size_t sectionSize);
 
 bool IsLineATagValue (const char line[]);
+bool GetTagValueFromLine (const char line[], char *tagPtr, size_t tagSize,
+                          char *valuePtr, size_t valueSize);
+
 
 #endif // INIPARSER_H_INCLUDED
 
