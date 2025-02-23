@@ -1,66 +1,35 @@
-#ifndef INIRECORDS_H_INCLUDED
-#define INIRECORDS_H_INCLUDED
+#ifndef INIFILEPARSERTEST_H_INCLUDED
+#define INIFILEPARSERTEST_H_INCLUDED
 
 /*--------------------------------------------------------------------------*/
 // Includes
 /*--------------------------------------------------------------------------*/
 #include <stdbool.h>
-#include <stdint.h>
+#include <stddef.h>     // for size_t
+
+// Include all the other header files.
 
 /*--------------------------------------------------------------------------*/
 // Constants
 /*--------------------------------------------------------------------------*/
-#define DEBUG_RECORDS 0
+
+/*--------------------------------------------------------------------------*/
+// Enums
+/*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
 // Typedefs
 /*--------------------------------------------------------------------------*/
-typedef void *RecordHandle;
-
-typedef struct rec_t
-{
-    struct rec_t    *next;      // Pointer to next record structure.
-    struct rec_t    *prev;      // Pointer to previous record structure.
-    const char      line[];     //
-} RecordStruct;
 
 /*--------------------------------------------------------------------------*/
-// Global Variables
+// Externs for Global Variables
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Static Variables
+// Prototypes
 /*--------------------------------------------------------------------------*/
+bool INIFileParserTest (void);
 
-/*--------------------------------------------------------------------------*/
-// Public Prototypes
-/*--------------------------------------------------------------------------*/
-// Init/Term
+#endif // INIFILEPARSERTEST_H_INCLUDED
 
-RecordHandle *RecordInit (void);
-
-bool RecordTerm (RecordHandle *handle);
-
-// Read/Write
-
-RecordStruct *RecordRead (RecordHandle *handle);
-
-bool RecordWrite (RecordHandle *handle, const char *line);
-
-unsigned int RecordGetCount (RecordHandle *handle);
-
-// Delete/Seek
-
-bool RecordDelete (RecordHandle *handle, RecordStruct *record);
-
-bool RecordSeek (RecordHandle *handle, unsigned int recordNumber);
-
-// Debug Functions
-
-bool RecordShow (RecordStruct *record);
-
-bool RecordShowAll (RecordHandle *handle);
-
-#endif // INIRECORDS_H_INCLUDED
-
-// End of INIRecords.h
+// End of Template.h

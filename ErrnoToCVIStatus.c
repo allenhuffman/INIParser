@@ -3,9 +3,10 @@
 /*--------------------------------------------------------------------------*/
 // Compiler headers
 #include <errno.h>
+#include <stdio.h>
 
 // This projects's header
-#include "INIParser.h"
+//#include "INIParser.h"
 
 // This file's header
 #include "ErrnoToCVIStatus.h"
@@ -87,6 +88,11 @@ int ErrnoToCVIStatus (int err) // cannot use "errno" since it is a global
             status = -1; // TODO
             break;
 
+        //22 - bad arguments (to fopen?)
+        case EINVAL:
+            status = -1; // TODO
+            break;
+
         // 23 - Too Many Files are Open in the System
         case ENFILE:
             status = -1; // TODO
@@ -118,7 +124,8 @@ int ErrnoToCVIStatus (int err) // cannot use "errno" since it is a global
             break;
 
         default:
-            status = -1; // TODO
+            fprintf (stderr, "Unhandled errno: %d\n", err);
+            status = -99999; // TODO
             break;
     }
 

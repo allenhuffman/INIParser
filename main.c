@@ -1,220 +1,206 @@
-#include <ctype.h>
+/*--------------------------------------------------------------------------*/
+// Includes
+/*--------------------------------------------------------------------------*/
+// Compiler headers
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdlib.h> // for EXIT_SUCCESS
+#include <string.h> // for memset();
 
-#include "ErrnoToCVIStatus.h"
+// This project's header
 #include "INIParser.h"
-#include "Utilities.h"
 
-#include "INIRecords.h" // for testing the records.
+// This file's header
 
-#define INI_FILENAME "Sample.ini"
+// Other headers
+#include "MyMalloc.h"
 
-void PrintHeader (const char *header)
+/*--------------------------------------------------------------------------*/
+// Constants
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Enums
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Typedefs
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Global Variables
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Static Variables
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Private Prototypes
+/*--------------------------------------------------------------------------*/
+void ReadAndShow (RecordHandle *handle, const char *section, const char *tag);
+
+
+/*--------------------------------------------------------------------------*/
+// Public Functions
+/*--------------------------------------------------------------------------*/
+
+#define REAL_TEST
+int main (int argc, char **argv)
 {
-    printf ("\n"
-            "%s\n"
-            "-------------------------------------------------------------------------------\n",
-            header);
-}
+    (void)argc; // Not used.
+    (void)argv; // Not used.
 
-int main()
-{
-    // Test some of the calls:
-    char buffer[80] = {0};
+    IniText iniTxt;
+    int status = 0; // INI Status
 
-    const char *testLines[] =
+    // Test 1 - Create .ini file with some sections and tag/values.
+
+    printf ("Before Ini_New() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+
+    iniTxt = Ini_New (false); // No automatic sorting.
+
+    if (NULL == iniTxt)
     {
-        // Emtpy
-        "",
-        // Invalid
-        "Hello World!",
-        "=",
-        "=Value",
-        "Tag=",
-        // Comments
-        "; This is a comment",
-        ";This is also a comment",
-        // Sections
-        "[This is a section]",
-        "[ This is a section ]",
-        "[This is a section] ; Comment",
-        "[  This is a section  ] ; Comment",
-        // Key/Value
-        "Tag=Value",
-        "Tag = Value",
-        "Tag = Value ; Comment",
-        NULL
-    };
-
-    int idx = 0;
-
-    PrintHeader ("Line Types:");
-    idx = 0;
-    while (NULL != testLines[idx])
+        fprintf (stderr, "Unable to Ini_New()\n");
+    }
+    else
     {
-        printf ("%2d) '%s'%-*s%s\n",
-                idx, testLines[idx],
-                (int)(40-strlen(testLines[idx])-2), "",
-                LineTypeToStringPtr (GetLineType (testLines[idx])));
+        RecordWriteUnknown (iniTxt, "");
+        RecordWriteComment (iniTxt, "Boolean Test");
+        Ini_PutBoolean (iniTxt, "Booleans", "TagTrue", 1);
+        Ini_PutBoolean (iniTxt, "Booleans", "TagFalse", 0);
 
-        idx++;
+        RecordWriteUnknown (iniTxt, "");
+        RecordWriteComment (iniTxt, "String Test");
+        Ini_PutString (iniTxt, "Strings", "String1", "No leading or trailing spaces.");
+        Ini_PutString (iniTxt, "Strings", "String2", "   This one has leading spaces.");
+        Ini_PutString (iniTxt, "Strings", "String3", "This one has trailing spaces.  ");
+
+        RecordWriteUnknown (iniTxt, "");
+        RecordWriteComment (iniTxt, "Integer Test");
+        int integerValue = -42;
+        Ini_PutInt (iniTxt, "Integers", "Integer1", integerValue);
+
+        RecordWriteUnknown (iniTxt, "");
+        RecordWriteComment (iniTxt, "Unsigned Integer Test");
+        unsigned int unsignedIntegerValue = 42;
+        Ini_PutInt (iniTxt, "Unsigned Integers", "UnsignedInteger1", unsignedIntegerValue);
+
+        RecordWriteUnknown (iniTxt, "");
+        RecordWriteComment (iniTxt, "Double Test");
+        double doubleValue = -42.42;
+        Ini_PutDouble (iniTxt, "Doubles", "Double", doubleValue);
+
+        RecordShowAll (iniTxt);
+
+        status = Ini_WriteToFile (iniTxt, "IniTest.ini");
+        if (0 != status)
+        {
+            fprintf (stderr, "Ini_WriteToFile() error: %d\n", status);
+        }
+    }
+    Ini_Dispose (iniTxt);
+
+    printf ("After Ini_Dispose() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+
+    printf ("----------------------------------------------------------------------\n");
+
+    // Test 12- Read values from .ini
+
+    printf ("Before Ini_New() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+
+    iniTxt = Ini_New (false); // No automatic sorting.
+
+    if (NULL == iniTxt)
+    {
+        fprintf (stderr, "Unable to Ini_New()\n");
+    }
+    else
+    {
+        printf ("Reading and parsing .ini file...\n");
+        status = Ini_ReadFromFile (iniTxt, "IniTest.ini");
+
+        if (0 != status)
+        {
+            fprintf (stderr, "Ini_ReadFromFile() error: %d\n", status);
+        }
+        else
+        {
+            RecordShowAll (iniTxt);
+
+            printf ("\n");
+
+            int booleanValue = 0;
+
+            Ini_GetBoolean (iniTxt, "Booleans", "TagTrue", &booleanValue);
+            printf ("bool  : %d\n", booleanValue);
+            Ini_GetBoolean (iniTxt, "Booleans", "TagFalse", &booleanValue);
+            printf ("bool  : %d\n", booleanValue);
+
+            char buffer[80] = {0};
+
+            memset (buffer, 0, sizeof(buffer));
+            Ini_GetStringIntoBuffer (iniTxt, "Strings", "String1", buffer, sizeof(buffer));
+            printf ("string: '%s'\n", buffer);
+
+            memset (buffer, 0, sizeof(buffer));
+            Ini_GetStringIntoBuffer (iniTxt, "Strings", "String2", buffer, sizeof(buffer));
+            printf ("string: '%s'\n", buffer);
+
+            memset (buffer, 0, sizeof(buffer));
+            Ini_GetStringIntoBuffer (iniTxt, "Strings", "String3", buffer, sizeof(buffer));
+            printf ("string: '%s'\n", buffer);
+
+            int integerValue = 0;
+            Ini_GetInt (iniTxt, "Integers", "Integer1", &integerValue);
+            printf ("int   : %d\n", integerValue);
+
+            unsigned int unsignedIntegerValue = 42;
+            Ini_GetUInt (iniTxt, "Unsigned Integers", "UnsignedInteger1", &unsignedIntegerValue);
+            printf ("uint  : %u\n", unsignedIntegerValue);
+
+            double doubleValue = 0;
+            Ini_GetDouble (iniTxt, "Doubles", "Double", &doubleValue);
+            printf ("double: %f\n", doubleValue);
+
+        }
+
+        Ini_Dispose (iniTxt);
     }
 
-    // Test Comment parser.
-    PrintHeader ("Comments:");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        memset (buffer, 0x0, sizeof(buffer));
-        printf ("%2d) ", idx);
-        GetCommentFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
-        idx++;
+    printf ("After Ini_Dispose() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+
+/*
+        status = Ini_ReadFromFile (iniTxt, "Sample2.ini");
+
+        if (status < 0) // 0 means success here.
+        {
+            fprintf (stderr, "Unable to read from file: %d\n", status);
+        }
+        else
+        {
+            printf ("After Ini_ReadFromFile() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
+
+            RecordShowAll (iniTxt);
+
+            printf ("Adding a new key to Exciter...\n");
+
+            RecordWriteSectionTagValue (iniTxt, "Exciter", "FirmwareUpdate","Work");
+
+            RecordShowAll (iniTxt);
+        }
+
+        Ini_Dispose (iniTxt);
+
+        printf ("After Ini_Dispose() - Allocated: %u\n", (unsigned int)GetSizeAllocated());
     }
-
-    // Test Section parser
-    PrintHeader ("Sections:");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        printf ("%2d) ", idx);
-        GetSectionFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
-        idx++;
-    }
-
-    // Test Tag parser
-    PrintHeader ("Tags");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        printf ("%2d) ", idx);
-        GetTagFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
-        idx++;
-    }
-
-    // Test Key parser
-    PrintHeader ("Value");
-    idx = 0;
-    while (NULL != testLines[idx])
-    {
-        printf ("%2d) ", idx);
-        GetValueFromLine (testLines[idx], &buffer[0], sizeof(buffer)-1);
-        idx++;
-    }
-
-    exit (0);
-#if 0
-    // Test the INIRecords.
-    bool status = false;
-
-    RecordHandle handle = RecordInit ();
-
-    if (NULL != handle)
-    {
-        // Write 10 lines...
-        for (int idx = 1; idx <= 10; idx++)
-        {
-            char line[80];
-            snprintf (line, sizeof(line), "This is line %d.", idx);
-
-            status = RecordWrite (handle, line);
-
-            if (false == status)
-            {
-                break;
-            }
-        } // end of for (int idx = 0
-
-        if (true == status)
-        {
-            RecordShowAll (handle);
-        }
-
-        RecordTerm (handle);
-
-        printf ("Done.\n");
-
-    } // end of if (NULL != handle)
-
-#endif
-
-    // TEST CODE
-    IniText iniText;
-
-    iniText = Ini_New (0); // No automatic sorting.
-
-    if (0 != iniText)
-    {
-        int             status = 0;
-        unsigned int    httpPort = 0;
-        char            httpUsername[80] = {0};
-
-        unsigned int    httpsPort = 0;
-        char            httpsUsername[80] = {0};
-
-        unsigned int    ftpPort = 0;
-        char            ftpUsername[80] = {0};
-
-
-        status = Ini_ReadFromFile (iniText, INI_FILENAME);
-
-        // TESTING:
-        RecordShowAll (iniText);
-
-        /*------------------------------------------------------------------*/
-        // [http]
-        /*------------------------------------------------------------------*/
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetUInt (iniText, "http", "port", &httpPort);
-        }
-
-        if (0 == status)
-        {
-            status = Ini_GetStringIntoBuffer (iniText, "http", "username",
-                                              &httpUsername[0],
-                                              sizeof(httpUsername)-1);
-        }
-
-        /*------------------------------------------------------------------*/
-        // [https]
-        /*------------------------------------------------------------------*/
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetUInt (iniText, "https", "port", &httpsPort);
-        }
-
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetStringIntoBuffer (iniText, "https", "username",
-                                              &httpsUsername[0],
-                                              sizeof(httpsUsername)-1);
-        }
-
-        /*------------------------------------------------------------------*/
-        // [ftp]
-        /*------------------------------------------------------------------*/
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetUInt (iniText, "ftp", "port", &ftpPort);
-        }
-
-        if (NO_ERROR == status)
-        {
-            status = Ini_GetStringIntoBuffer (iniText, "ftp", "username",
-                                              &ftpUsername[0],
-                                              sizeof(ftpUsername)-1);
-        }
-
-        printf ("HTTP  %-5u - %s\n", httpPort, httpUsername);
-        printf ("HTTPS %-5u - %s\n", httpPort, httpUsername);
-        printf ("FTP   %-5u - %s\n", httpPort, httpUsername);
-
-        Ini_Dispose (iniText);
-    }
+*/
 
     return EXIT_SUCCESS;
 }
 
-// End of main.c
+/*--------------------------------------------------------------------------*/
+// Private Functions
+/*--------------------------------------------------------------------------*/
+
+// End of Template.c

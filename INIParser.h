@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #include <stddef.h>     // for size_t
 
+typedef void *IniText; // TODO: Not sure what this will be yet.
+
 // Include all the other header files.
 #include "INIParserGettingValuesFromTags.h"
 #include "INIParserInformational.h"
@@ -18,10 +20,12 @@
 #include "INIParserPuttingTagValuePairs.h"
 #include "INIParserRemovingSectionsAndItems.h"
 
+#include "INI.h"
+#include "INIFileParser.h"
+
 /*--------------------------------------------------------------------------*/
 // Typedefs
 /*--------------------------------------------------------------------------*/
-typedef void *IniText; // TODO: Not sure what this will be yet.
 
 /*--------------------------------------------------------------------------*/
 // Enums
@@ -35,50 +39,19 @@ typedef enum
     RAWBYTES
 } IniFileEncodingType;
 
-typedef enum
-{
-    LINE_UNKNOWN,
-    LINE_INVALID,
-    LINE_EMPTY,
-    LINE_COMMENT,
-    LINE_SECTION,
-    LINE_TAGVALUE,
-} LineTypeEnum;
-
 /*--------------------------------------------------------------------------*/
 // Constants
 /*--------------------------------------------------------------------------*/
 #define LINE_MAX_LEN    256
+#define SECTION_MAX_LEN 80
+#define TAG_MAX_LEN     80
+#define VALUE_MAX_LEN   80
+#define MAX_PATHNAME_LEN 256 // TODO
+
 
 /*--------------------------------------------------------------------------*/
 // Prototypes
 /*--------------------------------------------------------------------------*/
-
-// SeekToSection
-
-LineTypeEnum GetLineType (const char line[]);
-
-bool GetCommentFromLine (const char line[], char *commentPtr, size_t commentSize);
-
-bool GetSectionFromLine (const char line[], char *sectionPtr, size_t sectionSize);
-
-bool GetTagFromLine (const char line[], char *tagPtr, size_t tagSize);
-
-bool GetValueFromLine (const char line[], char *valuePtr, size_t valueSize);
-
-const char *LineTypeToStringPtr (LineTypeEnum lineType);
-
-bool RemoveComments (const char line[], char *newLinePtr, size_t newLineSize);
-
-bool RemoveSpacesAroundEqual (const char line[], char *newLinePtr, size_t newLineSize);
-
-bool IsLineEmpty (const char line[]);
-
-bool IsLineAComment (const char line[]);
-
-bool IsLineASection (const char line[]);
-
-bool IsLineATagValue (const char line[]);
 
 #endif // INIPARSER_H_INCLUDED
 

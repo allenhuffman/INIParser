@@ -1,15 +1,19 @@
-#ifndef INIPARSERINFORMATIONAL_H_INCLUDED
-#define INIPARSERINFORMATIONAL_H_INCLUDED
+#ifndef INIFILEPARSER_H_INCLUDED
+#define INIFILEPARSER_H_INCLUDED
 
 /*--------------------------------------------------------------------------*/
 // Includes
 /*--------------------------------------------------------------------------*/
+#include <stdbool.h>
 #include <stddef.h>     // for size_t
+#include <stdio.h.>     // for FILE*
 
-#include "INIParser.h"
+// Include all the other header files.
+#include "INI.h"
+
 
 /*--------------------------------------------------------------------------*/
-// Typedefs
+// Constants
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
@@ -17,22 +21,24 @@
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
-// Constants
+// Typedefs
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+// Externs for Global Variables
 /*--------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------*/
 // Prototypes
 /*--------------------------------------------------------------------------*/
-// Informational
-int     Ini_SectionExists (IniText handle, const char sectionName[]);
+bool FindFirstAndLastNonWhitespace (const char *line, unsigned int *startPos, unsigned int *endPos, bool removeComments);
 
-//int     Ini_NumberOfSections (IniText handle);
-//int     Ini_NthSectionName (IniText handle, int sectionIndex, char **sectionNamePointer);
-//int     Ini_ItemExists (IniText handle, const char sectionName[], const char tagName[]);
-//int     Ini_NumberOfItems (IniText handle, const char sectionName[]);
-//int     Ini_NthItemName (IniText handle, const char sectionName[], int itemIndex, char **itemTagNamePointer);
-//int     Ini_LineOfLastAccess (IniText handle);
+bool ParseSection (const char *line, char *section, size_t sectionSize);
 
-#endif // INIPARSERINFORMATIONAL_H_INCLUDED
+bool ParseTagValue (const char *line, char *tag, size_t tagSize, char *value, size_t valueSize);
 
-// End of INIParserManagement.h
+
+#endif // INIFILEPARSER_H_INCLUDED
+
+// End of Template.h
+

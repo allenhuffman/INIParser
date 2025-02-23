@@ -14,8 +14,7 @@
 
 // Other headers
 #include "ErrnoToCVIStatus.h"
-#include "INIRecords.h"
-#include "Utilities.h"
+#include "INI.h"
 
 /*--------------------------------------------------------------------------*/
 // Constants
@@ -70,6 +69,7 @@ void Ini_Dispose (IniText handle)
 int Ini_WriteToFile (IniText handle, const char pathname[])
 {
     int status = NO_ERROR;
+    char buffer[LINE_MAX_LEN];
 
     if (NULL != handle)
     {
@@ -82,18 +82,26 @@ int Ini_WriteToFile (IniText handle, const char pathname[])
         else
         {
             // Open file for writing.
-            fp = fopen (pathname, "w+"); // Overwrite
+            fp = fopen (pathname, "w"); // Overwrite
+        }
 
-            if (NULL == fp)
-            {
+        if (NULL != fp)
+        {
+            RecordSeekToStart (handle);
 
-                fclose (fp);
-            }
-            else // File could not be created.
+            while (RecordGetNext (handle, buffer, sizeof(buffer)))
             {
-                // Use errno
-                status = ErrnoToCVIStatus (errno);
+                // TODO: error checking.
+                fputs (buffer, fp);
             }
+
+            fclose (fp);
+        }
+        else // File could not be created.
+        {
+            // Use errno
+            printf ("Unable to create: '%s'\n", pathname);
+            status = ErrnoToCVIStatus (errno);
         }
     }
 
@@ -104,6 +112,11 @@ int Ini_WriteToFile (IniText handle, const char pathname[])
 int Ini_ReadFromFile (IniText handle, const char pathname[])
 {
     int status = NO_ERROR;
+    char line[LINE_MAX_LEN] = {0};
+    char tag[TAG_MAX_LEN] = {0};
+    char value[VALUE_MAX_LEN] = {0};
+    unsigned int startPos = 0;
+    unsigned int endPos = 0;
 
     if (NULL != handle)
     {
@@ -114,8 +127,6 @@ int Ini_ReadFromFile (IniText handle, const char pathname[])
 
         if (NULL != fp)
         {
-            char line[LINE_MAX_LEN];
-
             // Read file into records.
             while (!feof (fp))
             {
@@ -124,27 +135,45 @@ int Ini_ReadFromFile (IniText handle, const char pathname[])
                 if (NULL == fgets (&line[0], sizeof(line)-1, fp))
                 {
                     // Error or end of file.
-                    status = ErrnoToCVIStatus (errno);
+                    //status = ErrnoToCVIStatus (errno);
                     break;
                 }
 
-                // Trim off any leading or trailing spaces,
-                // and any \r \n special characters.
-                char *trimmedLine = trim (line);
+                if (FindFirstAndLastNonWhitespace (line, &startPos, &endPos, false))
+                {
+                    line[endPos + 1] = '\0';
 
-                // Add this line to a record.
-                RecordWrite (handle, trimmedLine);
+                    if (';' == line[startPos])
+                    {
+                        RecordWriteComment (handle, &line[startPos+1]); // Skip semicolon
+                    }
+                    else if ('[' == line[0])
+                    {
+                        char section[80] = {0};
+                        if (true == ParseSection (&line[startPos], section, sizeof(section)))
+                        {
+                            RecordWriteSection (handle, section);
+                        }
+                    }
+                    else if (true == ParseTagValue (&line[startPos], tag, sizeof(tag), value, sizeof(value)))
+                    {
+                        RecordWriteTagValue (handle, tag, value);
+                    }
+                    else
+                    {
+                        if (('\n' == line[0]) || ('\r' == line[0]))
+                        {
+                            line[0] = '\0';
+                        }
+
+                        RecordWriteUnknown (handle, line);
+                    }
+                }
             }
 
             fclose (fp);
-
-            // If no error, continue...
-            if (NO_ERROR == status)
-            {
-                // Build Section/Key/Value stuff.
-            }
         }
-        else // File could not beopened.
+        else // File could not be opened.
         {
             status = ErrnoToCVIStatus (errno);
         }
