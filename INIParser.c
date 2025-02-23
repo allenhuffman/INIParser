@@ -2,7 +2,7 @@
 // Includes
 /*--------------------------------------------------------------------------*/
 // Compiler headers
-#include <ctype.h>  // for iswhite()
+#include <wctype.h>  // for iswspace()
 #include <stdio.h>
 #include <string.h> // for strchr()
 

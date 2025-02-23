@@ -2,6 +2,7 @@
 // Includes
 /*--------------------------------------------------------------------------*/
 // Compiler headers
+#include <errno.h>  // for errno
 #include <stdio.h>
 #include <string.h> // for memset()
 
