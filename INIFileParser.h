@@ -6,7 +6,7 @@
 /*--------------------------------------------------------------------------*/
 #include <stdbool.h>
 #include <stddef.h>     // for size_t
-#include <stdio.h>      // for FILE*
+#include <stdio.h>     // for FILE*
 
 // Include all the other header files.
 #include "INI.h"

@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 /*--------------------------------------------------------------------------*/
 // Includes
 /*--------------------------------------------------------------------------*/
@@ -48,7 +49,7 @@ bool FindFirstAndLastNonWhitespace (const char *line, unsigned int *startPos, un
     {
         size_t len = strlen (line);
         unsigned int start = 0;
-        unsigned int end = len - 1;
+        unsigned int end = (unsigned int)len - 1;
 
         if (true == removeComments)
         {
@@ -56,7 +57,7 @@ bool FindFirstAndLastNonWhitespace (const char *line, unsigned int *startPos, un
 
             if (NULL != semiPtr)
             {
-                end = semiPtr - line - 1;
+                end = (unsigned int)(semiPtr - line - 1);
             }
         }
 

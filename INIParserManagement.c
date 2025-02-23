@@ -1,8 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 /*--------------------------------------------------------------------------*/
 // Includes
 /*--------------------------------------------------------------------------*/
 // Compiler headers
-#include <errno.h>  // for errno
+#include <errno.h> // for errno
 #include <stdio.h>
 #include <string.h> // for memset()
 

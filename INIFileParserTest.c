@@ -46,7 +46,7 @@ static void ReadAndShow (RecordHandle *handle, const char *section, const char *
 /*--------------------------------------------------------------------------*/
 // Public Functions
 /*--------------------------------------------------------------------------*/
-bool INIFileParserTest (void)
+bool INIFileParserTest ()
 {
     bool status = true;
 
