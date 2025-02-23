@@ -67,7 +67,7 @@ Supported Functions (so far)
 
 **Informational**
 
-None.
+    int     Ini_SectionExists (IniText handle, const char sectionName[]);
 
 **Removing Sections and Items**
 
